@@ -30,7 +30,7 @@ class CampusUpdate:
         self._drop_rows_duplicated()
         self.campus_update = self.campus_update.sort_values(by="id").reset_index(drop=True)
         self.exp_verify = self.exp_verify.sort_values(by="id").reset_index(drop=True)
-
+        
     def _separate_infos_in_columns(self):
         columns_update = list(self.campus_update.columns)
         if 'virtual' in columns_update:
@@ -38,8 +38,17 @@ class CampusUpdate:
         for column in columns_update:
             if column in ['id','university_id']:
                 continue
-            mask = self.campus_update[column].eq(self.exp_verify[column])
-            self.campus_update.loc[mask, column] = True
+            if column == 'metadata_code':
+                for idx in self.campus_update.index:
+                    campus_val = str(self.campus_update.at[idx, 'metadata_code'])
+                    exp_val = str(self.exp_verify.at[idx, 'metadata_code'])
+                    if campus_val in exp_val.split('#'):
+                        self.campus_update.at[idx, 'metadata_code'] = True
+                    else:
+                        self.campus_update.at[idx, 'metadata_code'] = exp_val + '#' + campus_val
+            else:
+                mask = self.campus_update[column].eq(self.exp_verify[column])
+                self.campus_update.loc[mask, column] = True
 
     def _drop_columns_all_ignore(self):
         for col in self.campus_update.columns:
