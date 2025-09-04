@@ -48,6 +48,16 @@ class DataFrameUtils:
         return df_base
     
     @staticmethod
+    def xlookup_contains(df_base, df_search, lookup_value, lookup_array, return_array, name_column):
+        df_no_dups = df_search.drop_duplicates(subset=lookup_array)
+        df_base[name_column] = None
+        for index, value in df_base[lookup_value].items():
+            mask = df_no_dups[lookup_array].str.contains(value, na=False)
+            if mask.any():
+                df_base.at[index, name_column] = df_no_dups.loc[mask.idxmax(), return_array]
+        return df_base
+
+    @staticmethod
     def concat_series_with_separator(list_of_series,separator = None):
         quantity = len(list_of_series)
         if quantity == 2 and separator is not None:
