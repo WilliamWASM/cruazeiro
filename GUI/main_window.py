@@ -5,6 +5,7 @@ from GUI.menu_bar import *
 from GUI.view.home import *
 from GUI.view.cruzeiro import *
 from GUI.view.utilities import *
+from GUI.view.campus import *
 from GUI.menu_bar import *
 
 class MainWindow(QMainWindow):
@@ -21,6 +22,7 @@ class MainWindow(QMainWindow):
 
         self.home = Home()
         self.cruzeiro = CruzeiroDoSul()
+        self.campus = Campus()
         self.utilites = Utilities()
 
         self.setWindowIcon(QIcon(resource_path("ASSETS/ICONS/app_icon.ico")))
@@ -31,6 +33,7 @@ class MainWindow(QMainWindow):
         self.menu_bar.create_menu_button("#FF7E29","#FA9653","ASSETS/ICONS/menu_icon.png")
         self.home_btn = self.menu_bar.add_sub_menu_button("        Home","ASSETS/ICONS/home_icon.png")
         self.config = self.menu_bar.add_sub_menu_button("        Cruzeiro","ASSETS/ICONS/cruzeiro_icon.png")
+        self.campus_btn = self.menu_bar.add_sub_menu_button("        Campus","ASSETS/ICONS/campus_icon.png")
         self.utilites_btn = self.menu_bar.add_sub_menu_button("        Utilities","ASSETS/ICONS/utilities_icon.png")
         self.menu_bar.start_selected_button(self.home_btn)
         self.buttons = self.menu_bar.get_sub_menu_buttons()
@@ -41,13 +44,15 @@ class MainWindow(QMainWindow):
 
         self.stacks.addWidget(self.home)
         self.stacks.addWidget(self.cruzeiro)
+        self.stacks.addWidget(self.campus)
         self.stacks.addWidget(self.utilites)
 
         self.main_layout.addWidget(self.central_frame)
 
         self.menu_bar.set_action(self.home_btn,lambda: self.stacks.setCurrentIndex(0))
         self.menu_bar.set_action(self.config,lambda: self.stacks.setCurrentIndex(1))
-        self.menu_bar.set_action(self.utilites_btn,lambda: self.stacks.setCurrentIndex(2))
+        self.menu_bar.set_action(self.campus_btn,lambda: self.stacks.setCurrentIndex(2))
+        self.menu_bar.set_action(self.utilites_btn,lambda: self.stacks.setCurrentIndex(3))
 
         self.show()
 
