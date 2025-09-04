@@ -19,7 +19,6 @@ class CampusMatchService:
     
     def _metadata_verifications(self):
         self._verify_from_('metadata_code')
-        self._return_metadata_unique()
         if not self.msp_campus.empty and self._verify_name_ies_exists():
             self._name_verifications()
             if not self.msp_campus.empty and self._sku_exists():
@@ -38,7 +37,6 @@ class CampusMatchService:
         self.exp_verify = self._sku_generate(self.exp_verify)
         self._verify_from_('concat1')
 
-
     def _sku_exists(self):
         required = {'address_number', 'zipcode', 'virtual', 'university_id'}
         return required.issubset(self.msp_campus.columns)
@@ -53,14 +51,11 @@ class CampusMatchService:
                 ids_have_value = dfu.drop_rows_have_nulls(self.msp_campus, 'id')
                 self.campus_update = dfu.concat_dataframes(self.campus_update,ids_have_value)
                 self.msp_campus = dfu.filter_content_by_column(id_nulls,id_nulls,'id')
-            
     
     def _init_treatments(self):
         self._separate_have_id()
         self._lower_all_columns_have_string()
         self._slug_treatment()
-        if self._verify_metadata_exists():
-            self._metadata_treatment()
 
     def _slug_treatment(self):
         self.exp_verify['name'] = self.exp_verify['name'].str.replace(r'[^\w\s]|_', '', regex=True)
@@ -83,34 +78,28 @@ class CampusMatchService:
             else:
                 return False
     def _verify_name_ies_exists(self):
-        if 'name' or 'name_from_university' in self.msp_campus.columns:
+        if 'name' in self.msp_campus.columns or 'name_from_university' in self.msp_campus.columns:
             return True
         else:
             return False
-        
-    def _metadata_treatment(self):
-            self.exp_verify['metadata_code'] = self.exp_verify['metadata_code'].astype(str).str.split("#")
-            self.exp_verify = self.exp_verify.explode("metadata_code",ignore_index= True)
-            self.exp_verify['metadata_code'] = self.exp_verify['metadata_code'].replace('nan', '').fillna('')
 
     def _verify_from_(self,column_search):
-        campus_verif = dfu.xlookup(self.msp_campus,self.exp_verify,column_search,column_search,'id','id')
-        if dfu.verify_if_have_nulls(campus_verif['id']):
-            create_by = dfu.get_rows_have_nulls(campus_verif,'id')
-            campus_verif = dfu.drop_rows_have_nulls(campus_verif,'id')
-            self.campus_update = dfu.concat_dataframes(self.campus_update,campus_verif )
-            self.msp_campus = create_by
-        else:
-            self.campus_update = dfu.concat_dataframes(self.campus_update,campus_verif)
-            self.msp_campus = pd.DataFrame()
+        def _verify_have_nulls(campus_verif):
+                if dfu.verify_if_have_nulls(campus_verif['id']):
+                    create_by = dfu.get_rows_have_nulls(campus_verif,'id')
+                    campus_verif = dfu.drop_rows_have_nulls(campus_verif,'id')
+                    self.campus_update = dfu.concat_dataframes(self.campus_update,campus_verif )
+                    self.msp_campus = create_by
+                else:
+                    self.campus_update = dfu.concat_dataframes(self.campus_update,campus_verif)
+                    self.msp_campus = pd.DataFrame()
 
-    def _return_metadata_unique(self):
-        dup_ids_exp = self.exp_verify[self.exp_verify.duplicated(subset=['id'], keep=False)]
-        if not dup_ids_exp.empty:
-            mask_in_update = self.exp_verify['metadata_code'].isin(self.campus_update['metadata_code'])
-            if mask_in_update.any():
-                self.exp_verify = self.exp_verify[~mask_in_update].reset_index(drop=True)
-        self.exp_verify = dfu.remove_duplicates_by_columns(self.exp_verify, 'id')
+        if column_search == 'metadata_code':
+            campus_verif = dfu.xlookup_contains(self.msp_campus,self.exp_verify,column_search,column_search,'id','id')
+            _verify_have_nulls(campus_verif)
+        else:
+            campus_verif = dfu.xlookup(self.msp_campus,self.exp_verify,column_search,column_search,'id','id')
+            _verify_have_nulls(campus_verif)    
 
     def _sku_generate(self,dataframe):
         dataframe = dataframe.assign(
