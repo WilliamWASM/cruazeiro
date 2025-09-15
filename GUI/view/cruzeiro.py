@@ -29,10 +29,10 @@ class CruzeiroDoSul(ContentArea):
 
         self.card_grad = Card("pos-grad","#FF7E29")
         self.card_grad.create_front_card("Cruzeiro Grad EaD","#FF7E29","#F5F5F5","#000000","#D4D4D4","#8148C9","#F5F5F5","#7D3FC9","Selecione Exp")
-        self.card_grad.create_back_card("#FF7E29","Para a verificação e preenchimento correto siga as instruções: \n1. Selecione a planilha de Ofertas. \n2. Selecione o EXP de campus.\n3.Selecione a relação de Polos. \n4.Clique em 'Gerar'\n5.Selecione diretório que deseja salvar \n6.Preencha todos os campos solicitados e clique em 'OK'\n*IMPORTANTE: Certifique-se de selecionar na ordem correta*")
-        btn2_grad = self.card_grad.create_btn("Selecione Planilha de Campus","#F5F5F5","#000000","5px","#D4D4D4",170,30)
+        self.card_grad.create_back_card("#FF7E29","Para a verificação e preenchimento correto siga as instruções: \n1. Selecione a planilha de Ofertas da IES. \n2. Selecione a relação de polos x cursos.\n3.Selecione o EXP de campus. \n4.Clique em 'Gerar'\n5.Selecione nome que deseja salvar \n6.Preencha todos os campos solicitados e clique em 'OK'")
+        btn2_grad = self.card_grad.create_btn("Selecione polos x cursos","#F5F5F5","#000000","5px","#D4D4D4",170,30)
         self.card_grad.add_component_card(btn2_grad)
-        btn3_grad = self.card_grad.create_btn("Selecione Planilha de Offers","#F5F5F5","#000000","5px","#D4D4D4",170,30)
+        btn3_grad = self.card_grad.create_btn("Selecione ofertas IES","#F5F5F5","#000000","5px","#D4D4D4",170,30)
         self.card_grad.add_component_card(btn3_grad)
         self.card_grad.set_action_btn("btn_generate",self.process_grad)
 
