@@ -42,14 +42,14 @@ class MspGenerate:
         if 'Porcentagem total de desconto da bolsa\n(2º Semestre)' in self.campus_offers.columns:
             self.campus_offers.rename(columns={'PORCENTAGEM DE DESCONTO':'Porcentagem de desconto da bolsa (Fixo/1 º Semestre)'}, inplace=True)
             self.campus_offers.rename(columns={'DESCONTO GARANTIDO':'Porcentagem total de desconto da bolsa\n(3º Semestre)'}, inplace=True)
-            self.campus_offers['Porcentagem de desconto IES\n(1º Semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem de desconto da bolsa (Fixo/1 º Semestre)'])
-            self.campus_offers['Porcentagem de desconto IES\n(2º Semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem total de desconto da bolsa\n(2º Semestre)'])
-            self.campus_offers['Porcentagem de desconto IES\n(3º Semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem total de desconto da bolsa\n(3º Semestre)'])
+            self.campus_offers['Porcentagem de desconto IES (1º semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem de desconto da bolsa (Fixo/1 º Semestre)'])
+            self.campus_offers['Porcentagem de desconto IES (2º semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem total de desconto da bolsa\n(2º Semestre)'])
+            self.campus_offers['Porcentagem de desconto IES (3º semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem total de desconto da bolsa\n(3º Semestre)'])
         else:
             self.campus_offers.rename(columns={'PORCENTAGEM DE DESCONTO':'Porcentagem de desconto da bolsa (Fixo/1 º Semestre)',
                                                 'DESCONTO GARANTIDO':'Porcentagem total de desconto da bolsa\n(2º Semestre)'}, inplace=True)
-            self.campus_offers['Porcentagem de desconto IES\n(1º Semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem de desconto da bolsa (Fixo/1 º Semestre)'])
-            self.campus_offers['Porcentagem de desconto IES\n(2º Semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem total de desconto da bolsa\n(2º Semestre)'])
+            self.campus_offers['Porcentagem de desconto IES (1º semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem de desconto da bolsa (Fixo/1 º Semestre)'])
+            self.campus_offers['Porcentagem de desconto IES (2º semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem total de desconto da bolsa\n(2º Semestre)'])
             
     def _generate_formatted_percentage_column(self,series):
         series_float = series.astype(str).str.replace(',', '.', regex=False).astype(float) 
@@ -59,6 +59,13 @@ class MspGenerate:
     def _fill_in_remaining_values(self):
         self.campus_offers = dfu.xlookup(self.campus_offers,self.campus_group,'Nome da IES','university_name','university_id','ID da IES')
         self.campus_offers = ewa(self.campus_offers).load()
+
+    def _remaining_columns(self):
+        cols_in_df = list(self.campus_offers.columns)
+        cols_in_df.remove('Porcentagem total de desconto da bolsa\n(2º Semestre)') 
+        idx_ref = cols_in_df.index('Porcentagem de desconto da bolsa (Fixo/1 º Semestre)') + 1
+        cols_in_df.insert(idx_ref,'Porcentagem total de desconto da bolsa\n(2º Semestre)')
+        self.campus_offers = self.campus_offers[cols_in_df]
 
     def _generate_virtual_offers(self):
         self.offers_virtual = self.campus_offers.copy()
@@ -73,6 +80,7 @@ class MspGenerate:
     def load(self):
         self._adjusts_discounts()
         self._fill_in_remaining_values()
+        self._remaining_columns()
         self._generate_virtual_offers()
         self._drop_extra_columns()
         return self.campus_offers,self.offers_virtual
