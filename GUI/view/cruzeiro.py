@@ -2,6 +2,7 @@ from GUI.content_area import *
 from GUI.widgets.cards import *
 from MODELS.Cruzeiro_do_Sul.PosGradEad import PosGradEadCruzeiro
 from MODELS.Cruzeiro_do_Sul.tecnico import tecnicoCruzeiro
+from MODELS.Cruzeiro_do_Sul.Graduacao_EaD.ModifyHandler import ModifyHandler
 from GUI.widgets.notifications import *
 
 
@@ -26,9 +27,18 @@ class CruzeiroDoSul(ContentArea):
         self.card_pos.add_component_card(btn3_pos)
         self.card_pos.set_action_btn("btn_generate",self.process_pos)
 
+        self.card_grad = Card("pos-grad","#FF7E29")
+        self.card_grad.create_front_card("Cruzeiro Grad EaD","#FF7E29","#F5F5F5","#000000","#D4D4D4","#8148C9","#F5F5F5","#7D3FC9","Selecione Exp")
+        self.card_grad.create_back_card("#FF7E29","Para a verificação e preenchimento correto siga as instruções: \n1. Selecione a planilha de Ofertas da IES. \n2. Selecione a relação de polos x cursos.\n3.Selecione o EXP de campus. \n4.Clique em 'Gerar'\n5.Selecione nome que deseja salvar \n6.Preencha todos os campos solicitados e clique em 'OK'")
+        btn2_grad = self.card_grad.create_btn("Selecione polos x cursos","#F5F5F5","#000000","5px","#D4D4D4",170,30)
+        self.card_grad.add_component_card(btn2_grad)
+        btn3_grad = self.card_grad.create_btn("Selecione ofertas IES","#F5F5F5","#000000","5px","#D4D4D4",170,30)
+        self.card_grad.add_component_card(btn3_grad)
+        self.card_grad.set_action_btn("btn_generate",self.process_grad)
 
         self.add_card(self.card_tecnico,"TOP")
         self.add_card(self.card_pos,"TOP")
+        self.add_card(self.card_grad,"TOP")
 
     def process_tec(self):
             if self.card_tecnico.paths["btn_option1"] and self.card_tecnico.paths["btn_option2"]:
@@ -72,5 +82,29 @@ class CruzeiroDoSul(ContentArea):
                 except Exception as e:
                     Notification.error("Erro interno", f"Erro ao tentar gerar planilha final.\nDetalhes: {e}")
                     
+            else:
+                 Notification.error("Arquivos não selecionados","Necessário selecionar os arquivos para execução da operação. Tente novamente após selecioná-los")
+   
+    def process_grad(self):
+            if self.card_grad.paths["btn_option1"] and self.card_grad.paths["btn_option2"] and self.card_grad.paths["btn_option3"]:
+                try:
+                    offers = self.card_grad.paths["btn_option3"]
+                    relation = self.card_grad.paths["btn_option2"]
+                    exp = self.card_grad.paths["btn_option1"]
+                    self.card_grad.set_save_manager("btn_generate")
+                    path_save = self.card_grad.paths["save"]
+                    grad = ModifyHandler(offers,relation,exp)
+                    values = Notification.get_user_input()
+                    if values:
+                        end,osc,semester = values
+                        grad.set_values(semester,end,osc)
+                        grad.load(path_save)
+                    else:
+                         Notification.error("Erro ao carregar planilha, verifique as informações passsadas e tente novamente.")
+
+                    Notification.info("Operação finalizada","Planilha gerada com sucesso.")
+                    self.card_grad.set_text_btns(["btn_option1","btn_option2","btn_option3"])
+                except Exception as e:
+                    Notification.error("Erro interno", f"Erro ao tentar gerar planilha final.\nDetalhes: {e}")     
             else:
                  Notification.error("Arquivos não selecionados","Necessário selecionar os arquivos para execução da operação. Tente novamente após selecioná-los")

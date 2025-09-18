@@ -12,7 +12,9 @@ class SheetManipulation:
         "msp_campus" : ["name", "name_from_university", "zipcode", "metadata_code", "address_number"],
         "exp_campus" : ["id", "name", "education_group_id", "metadata_code", "match_codes"],
         "lote_kroton" : ["CHAVE", "LOTE", "IES", "COD_OFERTA_POLO", "DIA DA SEMANA"],
-        "estacio_campus": ["external_id","name","address","address_number","address_adjunct"]
+        "estacio_campus": ["external_id","name","address","address_number","address_adjunct"],
+        "cruzeiro_offers_to_campus": ['ID_POLO','NOME_POL','NM_FANTA','NOM_FILI','TIPO_POLO','SIT_POLO'],
+        "cruzeiro_offers": ["CHAVE 1","CHAVE 2","SUBCATEGORIA","CURSO","GRAU","PREÇO PARCELAS"]
 
 
     }
@@ -120,6 +122,19 @@ class SheetManipulation:
                 return pd.read_excel(self.path,sheet_name=self.sheet_name,dtype= self.dtype)
             except Exception as e:
                 raise ValueError (f"Erro ao carregar planilha Excel: {e}")
+        elif self.sheet_type == "cruzeiro_offers_to_campus":
+            self.set_cruzeiro_offers_to_campus_dtype()
+            try:
+                return pd.read_excel(self.path,sheet_name=self.sheet_name,dtype= self.dtype)
+            except Exception as e:
+                raise ValueError (f"Erro ao carregar planilha Excel: {e}")
+        elif self.sheet_type == "cruzeiro_offers":
+            print('reconheceu a offers de cruzeiro')
+            try:
+                dataframe = pd.read_excel(self.path,sheet_name=self.sheet_name)
+                return self.adjust_columns_offers_cruzeiro(dataframe)
+            except Exception as e:
+                raise ValueError (f"Erro ao carregar planilha Excel: {e}")
         elif self.sheet_type == "others":
             try:
                 return pd.read_excel(self.path,sheet_name=self.sheet_name)
@@ -195,6 +210,13 @@ class SheetManipulation:
             'metadata_code' : str,
             'university_id' : str,
             'external_id' : str
+        }
+
+    def set_cruzeiro_offers_to_campus_dtype(self):
+        self.dtype = {
+            'ID_POLO' : str,
+            'COD_CURS' : str,
+            'ID_POLO_HUB' : str
         }
 
     def xlsx_is_ready(self):
@@ -305,4 +327,18 @@ class SheetManipulation:
             if col in dataframe.columns
         })
         return dataframe
+    
+    def adjust_columns_offers_cruzeiro(self,dataframe):
+        values_columns = [
+            "PORCENTAGEM DE DESCONTO",
+            "DESCONTO GARANTIDO "
+        ]
+        lambda_apply = lambda x: f"{x:.2f}"
+        dataframe.update({
+            col: dataframe[col].apply(lambda_apply)
+            for col in values_columns
+            if col in dataframe.columns
+        })
+        return dataframe
+
  
