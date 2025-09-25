@@ -344,6 +344,6 @@ class SheetManipulation:
     def load_not_header(self):
         if self.file_type == ".xlsx":
             try:
-                return pd.read_excel(self.path,sheet_name=self.sheet_name,header=None)
+                return pd.read_excel(self.path,sheet_name=0,header=None)
             except Exception as e:
                 raise ValueError (f"Erro ao carregar planilha Excel: {e}") 
