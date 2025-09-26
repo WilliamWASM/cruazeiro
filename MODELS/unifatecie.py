@@ -123,6 +123,10 @@ class Unifatecie:
             if 'Curso' in df.columns:
                 df['Benefício 1 (Chave OSC)'] = osc
                 df.loc[:,'Data de Fim da Oferta'] = end_date
+    
+    def _substitute_kind_by_course(self):
+        mask = self.offers_concatened[ 'Nome do Curso'].str.contains('^\\d', case=False, na=False)
+        self.offers_concatened.loc[mask, 'Grau'] = 'Segunda Graduação'
 
     def load(self,path):
         self._separate_warnings()
@@ -133,6 +137,7 @@ class Unifatecie:
         self._adjust_course_duration()
         self._rename_columns()
         self._add_extra_columns()
+        self._substitute_kind_by_course()
         try:
             dfu.save_dataframe(self.offers_concatened,path,"MSP Ofertas")
         except Exception as e:
