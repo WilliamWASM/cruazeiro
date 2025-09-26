@@ -131,6 +131,8 @@ class Unifatecie:
     def _substitute_kind_by_course(self):
         mask = self.offers_concatened[ 'Nome do Curso'].str.contains('^\\d', case=False, na=False)
         self.offers_concatened.loc[mask, 'Grau'] = 'Segunda Graduação'
+        mask = self.offers_concatened[ 'Nome do Curso'].str.contains('Formação Pedagógica ', case=False, na=False)
+        self.offers_concatened.loc[mask, 'Grau'] = 'Segunda Graduação'
 
     def load(self,path):
         self._separate_warnings()
