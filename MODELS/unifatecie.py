@@ -32,11 +32,15 @@ class Unifatecie:
 
     def _separate_warnings(self):
         self.warning_for_disc = {}
+        self.reajust = " "
 
         warnings_df = (self.tables['DESCRIÇÃO DA PROMOÇÃO:'].iloc[:, 0].tolist() +
         self.tables['DESCRIÇÃO DA PROMOÇÃO:'].columns.tolist())
         for warning in warnings_df:
-            warning_txt = str(warning)
+            warning_txt = str(warning).replace("*", "").strip()
+            if "OBS:" in warning_txt:
+                warning_txt = warning_txt.replace("OBS:","").strip()
+                self.reajust = str(warning_txt)
             match_grp = re.search(r'GRUPOS?\s+(.+?)(?:\.|$)', warning_txt, re.IGNORECASE)
             if match_grp:
                 trunc_txt = re.search(r'(.*graduação)',warning_txt)
@@ -50,7 +54,7 @@ class Unifatecie:
     def _set_warnings(self):
         for group, warning in self.warning_for_disc.items():
             if "COM REAJUSTE ANUAL" in warning:
-                warning = warning + '. Reajuste de 5% a 10%.'
+                warning = warning + ". " + self.reajust
             group_course = self.tables[group]
             group_course['Avisos'] = warning
  
