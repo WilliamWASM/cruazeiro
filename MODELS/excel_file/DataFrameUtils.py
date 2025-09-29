@@ -41,6 +41,12 @@ class DataFrameUtils:
         return pd.concat([dataframe_top,dataframe_down],ignore_index=True)
     
     @staticmethod
+    def concat_multiples_dataframes(dataframes:list):
+        return pd.concat(dataframes,ignore_index=True)
+    
+
+    
+    @staticmethod
     def xlookup(df_base,df_search,lookup_value,lookup_array,return_array,name_column):
         df_no_dups = df_search.drop_duplicates(subset = lookup_array)
         lookup_search = df_no_dups.set_index(lookup_array)[return_array].to_dict()
