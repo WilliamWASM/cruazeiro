@@ -6,6 +6,7 @@ from config.configurations import PROJECT_CONFIGS, PROJECT_STYLES
 class MainWindowController():
     def __init__(self,main_window: MainWindow):
         self.projects = PROJECT_CONFIGS.keys()
+        self.projects_configs = PROJECT_CONFIGS
         self.main_window = main_window
         self.project_components = {}
         self.project_controllers ={}
@@ -58,8 +59,8 @@ class MainWindowController():
                 menu.set_selected(False)
 
     def create_projects(self):
-        for project in self.PROJECT_CONFIGS.keys():
-            controller = ProjectController(project, self.PROJECT_CONFIGS[project])
+        for project in self.projects:
+            controller = ProjectController(project, self.projects_configs[project])
             self.project_components[project] = {
                 "project_contents": controller.project_contents,
                 "card_controllers": controller.card_controllers,
@@ -68,7 +69,7 @@ class MainWindowController():
             self.project_controllers[project] = controller
 
     def create_menu_items(self):
-        for project_name,menu_items in self.PROJECT_CONFIGS.items():
+        for project_name,menu_items in self.projects_configs.items():
             menus_to_add = []
             for section_name in menu_items:
                 menu_create = MenuItem(section_name)
