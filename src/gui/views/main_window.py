@@ -1,5 +1,5 @@
 from qt_core import *
-from menu_bar import *
+from .menu_bar import *
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()

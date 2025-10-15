@@ -1,8 +1,8 @@
-from views.main_window import *
+from ..views.main_window import *
 from .menu_bar_controller import *
 from .project_controller import *
-from views.menu_item import *
-from config.configurations import PROJECT_CONFIGS, PROJECT_STYLES
+from ..views.menu_item import *
+from src.config.configurations import PROJECT_CONFIGS, PROJECT_STYLES
 class MainWindowController():
     def __init__(self,main_window: MainWindow):
         self.projects = PROJECT_CONFIGS.keys()
@@ -19,7 +19,7 @@ class MainWindowController():
             lambda _: self.main_window.content_layout.setCurrentIndex(self.main_window.get_home_index())
         )
 
-        self.main_window.menu_bar.set_default_area_style(self.project_styles['Siteops'].default_menu_area())
+        self.main_window.menu_bar.set_default_area_style(self.project_styles['SiteOps'].default_menu_area())
 
         self.main_window.menu_bar.cbox_projects.currentIndexChanged.connect(self.update_project_style)
         

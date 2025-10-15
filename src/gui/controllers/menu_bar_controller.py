@@ -1,4 +1,4 @@
-from views.menu_bar import *
+from ..views.menu_bar import *
 
 class MenuBarController():
     def __init__(self,menu_bar: MenuBar,projects):

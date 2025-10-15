@@ -1,4 +1,4 @@
-from factories.project_factory import *
+from ..factories.project_factory import *
 class ProjectController():
     def __init__(self,project_name,project_config):
 

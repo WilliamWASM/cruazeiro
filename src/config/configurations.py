@@ -1,7 +1,7 @@
-from gui.views.cards.base_card import *
-from gui.views.cards.combo_box_card import *
-from gui.views.cards.extra_button_card import *
-from resources.styles.light import *
+from ..gui.views.cards.base_card import *
+from ..gui.views.cards.combo_box_card import *
+from ..gui.views.cards.extra_button_card import *
+from ..resources.styles.light import *
 PROJECT_CONFIGS = {
             "SiteOps":{
                 "Universities":[

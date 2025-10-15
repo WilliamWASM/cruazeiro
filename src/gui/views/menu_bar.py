@@ -1,5 +1,5 @@
 from qt_core import *
-from toggle_button import *
+from .toggle_button import *
 class MenuBar(QWidget):
     def __init__(self):
         super().__init__()
