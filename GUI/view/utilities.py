@@ -6,6 +6,7 @@ from MODELS.Utilities.fix_cities import *
 from MODELS.Utilities.divisor import *
 from MODELS.Utilities.exp_msp import *
 from MODELS.Utilities.lote_kroton import *
+from MODELS.Utilities.university_offer import *
 from MODELS.campus.CampusVerifications import *
 
 class Utilities(ContentArea):
@@ -38,13 +39,19 @@ class Utilities(ContentArea):
         self.kroton_lote = Card("kroton_lote","#FF7E29")
         self.kroton_lote.create_front_card("kroton lote","#FF7E29","#F5F5F5","#000000","#D4D4D4","#8148C9","#F5F5F5","#7D3FC9","Selecione a planilha")
         self.kroton_lote.create_back_card("#FF7E29","Para a verificação e preenchimento correto siga as instruções: \n1. Selecione a planilha de lote. \n2.Selecione o local que será salvo e o nome do arquivo.\n3.Clique em 'Gerar'")
-        self.kroton_lote.set_action_btn("btn_generate", self.process_kroton_lote)      
+        self.kroton_lote.set_action_btn("btn_generate", self.process_kroton_lote)   
+
+        self.university_offers = Card("university_offer_dup","#FF7E29")
+        self.university_offers.create_front_card("DupOffers","#FF7E29","#F5F5F5","#000000","#D4D4D4","#8148C9","#F5F5F5","#7D3FC9","Selecione a planilha")
+        self.university_offers.create_back_card("#FF7E29","Para a verificação e preenchimento correto siga as instruções: \n1. Selecione a planilha de ofertas (MSP ou EXP). \n2. Clique em 'Gerar'\n\nIMPORTANTE: O arquivo é salvo na pasta original com 'Offers_by_sku_' na frente do nome")
+        self.university_offers.set_action_btn("btn_generate", self.process_dup_university_offer)
         
         self.add_card(self.card_exp_msp,"TOP")
         self.add_card(self.card_duplicates,"TOP")
         self.add_card(self.card_csv,"TOP")
         self.add_card(self.card_divisor,"BOTTOM")
         self.add_card(self.kroton_lote,"BOTTOM")
+        self.add_card(self.university_offers,"BOTTOM")
 
     def process_exp_msp(self):
         path = self.card_exp_msp.paths["btn_option1"]
@@ -89,3 +96,20 @@ class Utilities(ContentArea):
                 kroton.load()
                 Notification.info("Operação finalizada","Planilha gerada com sucesso.")
             self.kroton_lote.set_text_btns(["btn_option1"])
+
+    def process_dup_university_offer(self):
+        path = self.university_offers.paths["btn_option1"]
+        if path:
+            try:
+                self.university_offers.set_save_manager("btn_generate")
+                path_save = self.university_offers.paths["save"]
+                univOffer = RemoverUniversityOfferDuplicates(path)
+                if not path_save:
+                     Notification.error("Diretório inválido","Erro ao tentar gerar planilha final. Diretório não selecionado ou inválido. Execute a operação novamente, selecionando um diretório válido.")
+                else:
+                    univOffer.execute()
+                    Notification.info("Operação finalizada","Planilha gerada com sucesso.")
+            except Exception as e:
+                 Notification.error("Error ao processar",f"Erro ao processar o arquivo Excel: {e}")
+        else:
+             Notification.error("Arquivo não selecionado","Necessário selecionar o arquivo para execução da operação. Tente novamente após selecioná-lo");
