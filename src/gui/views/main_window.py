@@ -30,3 +30,33 @@ class MainWindow(QWidget):
         #Area de conteudo central
         self.content_area = QWidget()
         self.content_layout = QStackedLayout(self.content_area) 
+
+        self.menu_bar = MenuBar()
+
+        self.central_layout.addWidget(self.menu_bar)
+        self.central_layout.addWidget(self.content_area)  
+
+        # -- content to home button -- 
+        self.home_area = QWidget()
+        self.home_layout = QVBoxLayout(self.home_area)
+
+        self.version_app = QLabel()
+        self.title_feature = QLabel("Oque há de Novo:")
+        self.features_text = QLabel()
+        self.title_help = QLabel("Ficou com dúvidas?")
+        self.help_section = QLabel()
+
+        self.home_layout.addWidget(self.version_app)
+        self.home_layout.addWidget(self.title_feature)
+        self.home_layout.addWidget(self.features_text)
+        self.home_layout.addWidget(self.title_help)
+        self.home_layout.addWidget(self.help_section)
+
+        self.home_index = self.set_central_content(self.home_area)
+
+    def set_central_content(self, widget):
+        index = self.content_layout.addWidget(widget)
+        return index
+    
+    def get_home_index(self):
+        return self.home_index
