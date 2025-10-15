@@ -91,3 +91,9 @@ class MenuBar(QWidget):
     
     def get_widgets_to_animate(self):
         return self.toggle_container,self.cbox_projects
+    
+    def set_default_area_style(self,style):
+        self.default_content.setStyleSheet(style)
+
+    def set_style_project_area(self,project,style):
+        self.project_items[project]['widget'].setStyleSheet(style)
