@@ -30,3 +30,6 @@ class CardArea(QWidget):
     
     def get_cards(self):
         return self.cards
+    
+    def set_style(self,style):
+        self.setStyleSheet(style)
