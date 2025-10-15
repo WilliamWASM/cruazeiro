@@ -1,4 +1,4 @@
-from GUI.qt_core import *
+from qt_core import *
 
 class ContentArea(QFrame):
     def __init__(self,color,type = "HBox"):

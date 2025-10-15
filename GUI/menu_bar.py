@@ -1,4 +1,4 @@
-from GUI.qt_core import *
+from qt_core import *
 import os
 import sys
 class MenuBar(QFrame):

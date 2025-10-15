@@ -1,4 +1,4 @@
-from src.resources.view.main_window import *
+from src.gui.views.main_window import *
 from GUI.widgets.cards import *
 
 if __name__ == "__main__":

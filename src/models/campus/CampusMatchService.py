@@ -1,5 +1,5 @@
-from MODELS.excel_file.SheetManipulation import SheetManipulation as sma
-from MODELS.excel_file.DataFrameUtils import DataFrameUtils as dfu
+from models.excel_file.SheetManipulation import SheetManipulation as sma
+from models.excel_file.DataFrameUtils import DataFrameUtils as dfu
 import pandas as pd
 class CampusMatchService:
     def __init__(self,exp_verify,msp_campus,df_update):
