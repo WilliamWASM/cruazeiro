@@ -1,5 +1,4 @@
 class ComercialStyles:
-
     COLOR1 = "#FFE5F0" #default background 
     COLOR2 = "#F22786" #card background
     COLOR3 = "#FF5BB5" #generate bttn background
@@ -61,7 +60,6 @@ class ComercialStyles:
                 }}
             """
         }
-
         return card
     
     @staticmethod
@@ -72,7 +70,7 @@ class ComercialStyles:
                 color: {ComercialStyles.COLOR4};
             """,
             'selected' : f"""
-                QFrame[menu="item"] {{
+                QFrame[project="Comercial"] {{
                     background-color: {ComercialStyles.COLOR9};
                     border-right: 2px solid {ComercialStyles.COLOR1};
                 }} 
@@ -83,8 +81,6 @@ class ComercialStyles:
         }
         return menu_item
         
-    
-
     @staticmethod
     def card_area():
         return f"""
@@ -132,7 +128,7 @@ class SiteOpsStyles:
     COLOR6 = "#202020" # hover generate
     COLOR7 = "#BDA8B0" #hover buttons
     COLOR8 = "#273FC5" # hover menu item
-    COLOR9 = "#19277A" # pressed menuitem
+    COLOR9 = "#263CB6" # pressed menuitem
 
     @staticmethod
     def card():
@@ -185,7 +181,6 @@ class SiteOpsStyles:
                 }}
             """
         }
-
         return card
     
     @staticmethod
@@ -196,7 +191,7 @@ class SiteOpsStyles:
                 color: {SiteOpsStyles.COLOR4};
             """,
             'selected' : f"""
-                QFrame[menu="item"] {{
+                QFrame[project="SiteOps"] {{
                     background-color: {SiteOpsStyles.COLOR9};
                     border-right: 2px solid {SiteOpsStyles.COLOR1};
                 }} 
@@ -206,8 +201,6 @@ class SiteOpsStyles:
             """
         }
         return menu_item
-        
-    
 
     @staticmethod
     def card_area():
