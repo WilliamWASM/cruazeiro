@@ -18,9 +18,7 @@ class MainWindowController():
         self.main_window.menu_bar.cbox_projects.currentIndexChanged.connect(
             lambda _: self.main_window.content_layout.setCurrentIndex(self.main_window.get_home_index())
         )
-
         self.main_window.menu_bar.set_default_area_style(self.project_styles['SiteOps'].default_menu_area())
-
         self.main_window.menu_bar.cbox_projects.currentIndexChanged.connect(self.update_project_style)
         
         self.create_projects()
@@ -29,11 +27,9 @@ class MainWindowController():
         self.build_card_areas()
         self.connect_menu_items()
         self.apply_object_name_and_styles()
-
     
     def update_project_style(self):
         project = self.main_window.menu_bar.cbox_projects.currentText()
-
         self.main_window.menu_bar.set_default_area_style(self.project_styles[project].default_menu_area())
 
     def apply_object_name_and_styles(self):
@@ -42,14 +38,21 @@ class MainWindowController():
             menu_items = components["menu_items"]
             self.main_window.menu_bar.set_style_project_area(project,self.project_styles[project].project_menu_area())
             for section_name,card_area in card_areas.items():
-                card_area.setStyleSheet(self.project_styles[project].card_area()) 
+                card_area.set_style(self.project_styles[project].card_area()) 
                 cards = self.project_controllers[project].get_cards(section_name)   
                 for card in cards: 
                     card.set_style_front_card(self.project_styles[project].card()) 
                     card.set_style_back_card(self.project_styles[project].card()) 
             for menu in menu_items:
                 menu.set_styles(self.project_styles[project].menu_item())
-                menu.clicked.connect(lambda m=menu: self.select_menu_item(m, menu_items)) 
+                menu.clicked.connect(lambda checked=False, m=menu: self.on_menu_clicked(m))
+    
+    def on_menu_clicked(self, clicked_menu):
+        project = clicked_menu.property("project")
+        menu_items = self.project_components[project]["menu_items"]
+        
+        self.select_menu_item(clicked_menu, menu_items) 
+
 
     def select_menu_item(self, clicked_menu, menu_items):
         for menu in menu_items:
@@ -73,16 +76,11 @@ class MainWindowController():
             menus_to_add = []
             for section_name in menu_items:
                 menu_create = MenuItem(section_name)
-                menus_to_add.append(menu_create)
+                menu_create.setProperty("project", project_name)
+                menus_to_add.append(menu_create)                
 
             self.project_components[project_name]["menu_items"] = menus_to_add
             self.menu_bar_controller.add_menu_items(menus_to_add,project_name)
-
-    def build_card_areas(self):
-        for controller in self.project_controllers.values():
-            for menu_item,card_area in controller.get_card_areas().items():
-                index = self.main_window.content_layout.addWidget(card_area)
-                self.card_area_index[menu_item] = index
 
     def connect_home_button(self):
         home_btn = self.main_window.menu_bar.get_home_button()
@@ -90,12 +88,20 @@ class MainWindowController():
         home_btn.clicked.connect(
             lambda: self.main_window.content_layout.setCurrentIndex(home_index)
         )
+        
+    def build_card_areas(self):
+        for project,controller in self.project_controllers.items():
+            for menu_item,card_area in controller.get_card_areas().items():
+                index = self.main_window.content_layout.addWidget(card_area)
+                key = f"{project}_{menu_item}"
+                self.card_area_index[key] = index
 
     def connect_menu_items(self):
         for project_name, menu_items in self.project_components.items():
             for menu_item in menu_items["menu_items"]:
                 section_name = menu_item.lbl_text.text() 
-                index = self.card_area_index.get(section_name)
+                key = f"{project_name}_{section_name}"
+                index = self.card_area_index.get(key)
                 if index is not None:
                     menu_item.clicked.connect(
                         lambda i=index: self.main_window.content_layout.setCurrentIndex(i)
