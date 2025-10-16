@@ -3,7 +3,6 @@ class MenuItem(QFrame):
     clicked = Signal()
     def __init__(self,text_item):
         super().__init__()
-        self.setProperty("menu", "item")
         self.selected = False
         self.styles = None
         self.text = text_item
@@ -20,7 +19,6 @@ class MenuItem(QFrame):
 
         self.item_layout.addWidget(self.icon)
         self.item_layout.addWidget(self.lbl_text)
-
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
