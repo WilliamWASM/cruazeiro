@@ -1,11 +1,11 @@
-class ComercialLightStyles:
-    COLOR1 = "#FFE5F0" #default background 
+class ComercialDarkStyles:
+    COLOR1 = "#0C0C0D" #default background 
     COLOR2 = "#F22786" #card background
     COLOR3 = "#FF5BB5" #generate bttn background
     COLOR4 = "#F1F1F5" # texts color
-    COLOR5 = "#001219" # buttons color
+    COLOR5 = "#F1F1F5" # buttons color
     COLOR6 = "#CF4A93" # hover generate
-    COLOR7 = "#D3BBC5" #hover buttons
+    COLOR7 = "#555555" #hover buttons
     COLOR8 = "#B91F67" # hover menu item
     COLOR9 = "#EB0C74" # pressed menuitem
 
@@ -13,50 +13,50 @@ class ComercialLightStyles:
     def card():
         card = {
             'card': f"""
-                background-color: {ComercialLightStyles.COLOR2};
-                color: {ComercialLightStyles.COLOR4};
+                background-color: {ComercialDarkStyles.COLOR2};
+                color: {ComercialDarkStyles.COLOR4};
                 border-radius: 20px;
             """,
             'generate_btn': f"""
                 QPushButton {{
-                    background-color: {ComercialLightStyles.COLOR3};
-                    color: {ComercialLightStyles.COLOR4};
+                    background-color: {ComercialDarkStyles.COLOR3};
+                    color: {ComercialDarkStyles.COLOR4};
                     border-radius: 10px;
                 }}
                 QPushButton:hover{{
-                    background-color: {ComercialLightStyles.COLOR6};
+                    background-color: {ComercialDarkStyles.COLOR6};
                 }}
             """,
             'ask_button' : f"""
                 QPushButton {{
-                    background-color: {ComercialLightStyles.COLOR1};
-                    color: {ComercialLightStyles.COLOR2};
+                    background-color: {ComercialDarkStyles.COLOR1};
+                    color: {ComercialDarkStyles.COLOR2};
                     border-radius: 12px;
                 }}
             QPushButton:hover{{
-                background-color: {ComercialLightStyles.COLOR7};
+                background-color: {ComercialDarkStyles.COLOR7};
             }}
             """,
             'button' : f"""
                 QPushButton {{
-                    background-color: {ComercialLightStyles.COLOR1};
-                    color: {ComercialLightStyles.COLOR5};
+                    background-color: {ComercialDarkStyles.COLOR1};
+                    color: {ComercialDarkStyles.COLOR5};
                     border-radius: 10px;
                 }}
                 QPushButton:hover{{
-                    background-color: {ComercialLightStyles.COLOR7};
+                    background-color: {ComercialDarkStyles.COLOR7};
                 }}
             """,
             'combo_box' : f"""
                 QComboBox{{
                     background-color: transparent;
-                    color: {ComercialLightStyles.COLOR4};
+                    color: {ComercialDarkStyles.COLOR4};
 
                 }}
                 QComboBox QAbstractItemView {{
                     background-color: transparent;        
-                    color: {ComercialLightStyles.COLOR4};                   
-                    selection-background-color: {ComercialLightStyles.COLOR8};
+                    color: {ComercialDarkStyles.COLOR4};                   
+                    selection-background-color: {ComercialDarkStyles.COLOR8};
                 }}
             """
         }
@@ -66,17 +66,17 @@ class ComercialLightStyles:
     def menu_item():
         menu_item = {
             'default' : f"""
-                background-color: {ComercialLightStyles.COLOR2};
-                color: {ComercialLightStyles.COLOR4};
+                background-color: {ComercialDarkStyles.COLOR2};
+                color: {ComercialDarkStyles.COLOR4};
             """,
             'selected' : f"""
                 QFrame[project="Comercial"] {{
-                    background-color: {ComercialLightStyles.COLOR9};
-                    border-right: 2px solid {ComercialLightStyles.COLOR1};
+                    background-color: {ComercialDarkStyles.COLOR9};
+                    border-right: 2px solid {ComercialDarkStyles.COLOR1};
                 }} 
             """,
             'hover': f"""
-                background-color: {ComercialLightStyles.COLOR8};
+                background-color: {ComercialDarkStyles.COLOR8};
             """
         }
         return menu_item
@@ -84,48 +84,47 @@ class ComercialLightStyles:
     @staticmethod
     def card_area():
         return f"""
-        background-color: {ComercialLightStyles.COLOR1}
+        background-color: {ComercialDarkStyles.COLOR1}
         """
 
     @staticmethod
     def project_menu_area():
         return f"""
         QWidget[project_menu="Comercial"]{{
-            background-color: {ComercialLightStyles.COLOR2};
+            background-color: {ComercialDarkStyles.COLOR2};
             QComboBox{{
                 background-color: transparent;
-                color: {ComercialLightStyles.COLOR4};
+                color: {ComercialDarkStyles.COLOR4};
             }}
         }}
         QComboBox QAbstractItemView {{
             background-color: transparent;        
-            color: {ComercialLightStyles.COLOR4};                   
-            selection-background-color: {ComercialLightStyles.COLOR8};
+            color: {ComercialDarkStyles.COLOR4};                   
+            selection-background-color: {ComercialDarkStyles.COLOR8};
         }}
         """
     
     @staticmethod
     def default_menu_area():
         return f"""
-            background-color: {ComercialLightStyles.COLOR2};
+            background-color: {ComercialDarkStyles.COLOR2};
             QComboBox{{
                 background-color: transparent;
-                color: {ComercialLightStyles.COLOR4};
+                color: {ComercialDarkStyles.COLOR4};
             }}
             QComboBox QAbstractItemView {{
-                background-color: transparent;        
-                color: {ComercialLightStyles.COLOR4};                   
-                selection-background-color: {ComercialLightStyles.COLOR8};
+            j    background-color: transparent;        
+                color: {ComercialDarkStyles.COLOR4};                   
+                selection-background-color: {ComercialDarkStyles.COLOR8};
             }}
-
             """
 
-class SiteOpsLightStyles:
-    COLOR1 = "#F5F5F5" #default background 
+class SiteOpsDarkStyles:
+    COLOR1 = "#0C0C0D" #default background 
     COLOR2 = "#304FFE" #card background
     COLOR3 = "#333333" #generate bttn background
     COLOR4 = "#F5F5F5" # texts color
-    COLOR5 = "#001219" # buttons color
+    COLOR5 = "#F5F5F5" # buttons color
     COLOR6 = "#202020" # hover generate
     COLOR7 = "#BDA8B0" #hover buttons
     COLOR8 = "#273FC5" # hover menu item
@@ -135,50 +134,50 @@ class SiteOpsLightStyles:
     def card():
         card = {
             'card': f"""
-                background-color: {SiteOpsLightStyles.COLOR2};
-                color: {SiteOpsLightStyles.COLOR4};
+                background-color: {SiteOpsDarkStyles.COLOR2};
+                color: {SiteOpsDarkStyles.COLOR4};
                 border-radius: 20px;
             """,
             'generate_btn': f"""
                 QPushButton {{
-                    background-color: {SiteOpsLightStyles.COLOR3};
-                    color: {SiteOpsLightStyles.COLOR4};
+                    background-color: {SiteOpsDarkStyles.COLOR3};
+                    color: {SiteOpsDarkStyles.COLOR4};
                     border-radius: 10px;
                 }}
                 QPushButton:hover{{
-                    background-color: {SiteOpsLightStyles.COLOR6};
+                    background-color: {SiteOpsDarkStyles.COLOR6};
                 }}
             """,
             'ask_button' : f"""
                 QPushButton {{
-                    background-color: {SiteOpsLightStyles.COLOR1};
-                    color: {SiteOpsLightStyles.COLOR2};
+                    background-color: {SiteOpsDarkStyles.COLOR1};
+                    color: {SiteOpsDarkStyles.COLOR2};
                     border-radius: 12px;
                 }}
             QPushButton:hover{{
-                background-color: {SiteOpsLightStyles.COLOR7};
+                background-color: {SiteOpsDarkStyles.COLOR7};
             }}
             """,
             'button' : f"""
                 QPushButton {{
-                    background-color: {SiteOpsLightStyles.COLOR1};
-                    color: {SiteOpsLightStyles.COLOR5};
+                    background-color: {SiteOpsDarkStyles.COLOR1};
+                    color: {SiteOpsDarkStyles.COLOR5};
                     border-radius: 10px;
                 }}
                 QPushButton:hover{{
-                    background-color: {SiteOpsLightStyles.COLOR7};
+                    background-color: {SiteOpsDarkStyles.COLOR7};
                 }}
             """,
             'combo_box' : f"""
                 QComboBox{{
                     background-color: transparent;
-                    color: {SiteOpsLightStyles.COLOR4};
+                    color: {SiteOpsDarkStyles.COLOR4};
 
                 }}
                 QComboBox QAbstractItemView {{
                     background-color: transparent;        
-                    color: {SiteOpsLightStyles.COLOR4};                   
-                    selection-background-color: {SiteOpsLightStyles.COLOR8};
+                    color: {SiteOpsDarkStyles.COLOR4};                   
+                    selection-background-color: {SiteOpsDarkStyles.COLOR8};
                 }}
             """
         }
@@ -188,17 +187,17 @@ class SiteOpsLightStyles:
     def menu_item():
         menu_item = {
             'default' : f"""
-                background-color: {SiteOpsLightStyles.COLOR2};
-                color: {SiteOpsLightStyles.COLOR4};
+                background-color: {SiteOpsDarkStyles.COLOR2};
+                color: {SiteOpsDarkStyles.COLOR4};
             """,
             'selected' : f"""
                 QFrame[project="SiteOps"] {{
-                    background-color: {SiteOpsLightStyles.COLOR9};
-                    border-right: 2px solid {SiteOpsLightStyles.COLOR1};
+                    background-color: {SiteOpsDarkStyles.COLOR9};
+                    border-right: 2px solid {SiteOpsDarkStyles.COLOR1};
                 }} 
             """,
             'hover': f"""
-                background-color: {SiteOpsLightStyles.COLOR8};
+                background-color: {SiteOpsDarkStyles.COLOR8};
             """
         }
         return menu_item
@@ -206,37 +205,37 @@ class SiteOpsLightStyles:
     @staticmethod
     def card_area():
         return f"""
-        background-color: {SiteOpsLightStyles.COLOR1}
+        background-color: {SiteOpsDarkStyles.COLOR1}
         """
 
     @staticmethod
     def project_menu_area():
         return f"""
         QWidget[project_menu="SiteOps"]{{
-            background-color: {SiteOpsLightStyles.COLOR2};
+            background-color: {SiteOpsDarkStyles.COLOR2};
             QComboBox{{
                 background-color: transparent;
-                color: {SiteOpsLightStyles.COLOR4};
+                color: {SiteOpsDarkStyles.COLOR4};
             }}
         }}
         QComboBox QAbstractItemView {{
             background-color: transparent;        
-            color: {SiteOpsLightStyles.COLOR4};                   
-            selection-background-color: {SiteOpsLightStyles.COLOR8};
+            color: {SiteOpsDarkStyles.COLOR4};                   
+            selection-background-color: {SiteOpsDarkStyles.COLOR8};
         }}
         """
     
     @staticmethod
     def default_menu_area():
         return f"""
-            background-color: {SiteOpsLightStyles.COLOR2};
+            background-color: {SiteOpsDarkStyles.COLOR2};
             QComboBox{{
                 background-color: transparent;
-                color: {SiteOpsLightStyles.COLOR4};
+                color: {SiteOpsDarkStyles.COLOR4};
             }}
             QComboBox QAbstractItemView {{
             j    background-color: transparent;        
-                color: {SiteOpsLightStyles.COLOR4};                   
-                selection-background-color: {SiteOpsLightStyles.COLOR8};
+                color: {SiteOpsDarkStyles.COLOR4};                   
+                selection-background-color: {SiteOpsDarkStyles.COLOR8};
             }}
             """
