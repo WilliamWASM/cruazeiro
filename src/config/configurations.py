@@ -2,6 +2,7 @@ from ..gui.views.cards.base_card import *
 from ..gui.views.cards.combo_box_card import *
 from ..gui.views.cards.extra_button_card import *
 from ..resources.styles.light import *
+from ..resources.styles.dark import *
 PROJECT_CONFIGS = {
             "SiteOps":{
                 "Universities":[
@@ -9,9 +10,9 @@ PROJECT_CONFIGS = {
                     {"type": "base","title":"Kroton Lote","description":"Utilizado para gerar planilha da Unifatecie"}
                 ],
                 "Campus":[
-                    {"type": "base","title":"Campus","description":"Utilizado para gerar planilha da Unifatecie"},
-                    {"type": "base","title":"Uniasselv EaD","description":"Utilizado para gerar planilha da Unifatecie"},
-                    {"type": "base","title":"Uniasselvi Presencial","description":"Utilizado para gerar planilha da Unifatecie"}
+                    {"type": "extra","title":"Campus","description":"Utilizado para gerar planilha da Unifatecie"},
+                    {"type": "extra","title":"Uniasselv EaD","description":"Utilizado para gerar planilha da Unifatecie"},
+                    {"type": "extra","title":"Uniasselvi Presencial","description":"Utilizado para gerar planilha da Unifatecie"}
                 ],
                 "Cruzeiro":[
                     {"type": "base","title":"Cruzeiro Técnico","description":"Utilizado para gerar planilha da Unifatecie"},
@@ -49,6 +50,36 @@ CARD_TYPES = {
     }
 
 PROJECT_STYLES = {
-            "Comercial" : ComercialStyles,
-            "SiteOps" : SiteOpsStyles
+    'Comercial': {
+        'light': ComercialLightStyles,
+        'dark': ComercialDarkStyles
+    },
+    'SiteOps': {
+        'light': SiteOpsLightStyles, 
+        'dark': SiteOpsDarkStyles
+    }
+}
+
+CARD_ACTIONS = {
+    "SiteOps": {
+        "Campus": {
+            "button_texts": ["Selecione MSP Polos", "Selecione EXP campus"],
+            "generate_action": "process_campus",
+            "save_type": "save_file",
+            "section": "campus"  
+        },
+        "Uniasselvi EaD": {
+            "button_texts": ["Selecione Planilha Campus", "Selecione EXP campus"],
+            "generate_action": "process_uniasselvi_ead", 
+            "save_type": "save_file",
+            "section": "campus"
+        },
+        "Uniasselvi Presencial": {
+            "button_texts": ["Selecione Planilha Campus", "Selecione EXP campus"],
+            "generate_action": "process_uniasselvi_presencial",
+            "save_type": "save_file", 
+            "section": "campus"
         }
+    }
+}
+
