@@ -2,6 +2,7 @@ from ..views.cards.base_card import *
 from ..views.cards.combo_box_card import *
 from ..views.cards.extra_button_card import *
 from ..controllers.card_controller import *
+from ...config.configurations import CARD_TYPES, CARD_ACTIONS
 
 class CardFactory:
     CARD_TYPES = {
@@ -9,6 +10,8 @@ class CardFactory:
         "combo": ComboBoxCard,
         "extra": ExtraButtonCard,
     }
+    card_actions = CARD_ACTIONS 
+
 
     @staticmethod
     def build(card_config: dict):

@@ -9,6 +9,8 @@ class FrontCard(QFrame):
         self.card_layout.setSpacing(0) 
         self.components = {}
         self.default_buttons = []
+        self.selector_buttons = []
+        self.paths = {}
 
         self.top_content = QWidget()
         self.top_content_layout = QHBoxLayout(self.top_content)
@@ -44,9 +46,12 @@ class FrontCard(QFrame):
         self.default_buttons.append(self.info_btn)
     
     def add_content(self, widget):
-        widget.setFixedSize(220,35)
         self.contents_layout.addWidget(widget)
-        self.components[widget] = None
+        if isinstance(widget, QPushButton):
+            widget.setFixedSize(220,35)
+            self.components[widget] = widget.text()
+            self.selector_buttons.append(widget)
+            self.paths[widget] = None
 
     def redefine_component_order(self,new_order: list):
         for component in new_order:
@@ -62,3 +67,17 @@ class FrontCard(QFrame):
     
     def get_default_buttons(self):
         return self.default_buttons
+    
+    def get_paths(self):
+        return self.paths
+    
+    def set_path_for_button(self,button: QPushButton,path: str):
+        if button in self.paths:
+            self.paths[button] = path
+        
+    def get_path_for_button(self,button: QPushButton):
+        return self.paths.get(button, None)
+    
+    def get_selector_buttons(self):
+        return self.selector_buttons
+    
