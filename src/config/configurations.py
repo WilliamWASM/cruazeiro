@@ -3,6 +3,8 @@ from ..gui.views.cards.combo_box_card import *
 from ..gui.views.cards.extra_button_card import *
 from ..resources.styles.light import *
 from ..resources.styles.dark import *
+from ..gui.controllers.sections.campus_controller import *
+from ..gui.managers.file_manager import *
 PROJECT_CONFIGS = {
             "SiteOps":{
                 "Universities":[
@@ -64,19 +66,28 @@ CARD_ACTIONS = {
     "SiteOps": {
         "Campus": {
             "button_texts": ["Selecione MSP Polos", "Selecione EXP campus"],
-            "generate_action": "process_campus",
+            "generate_action": lambda data: CampusController().process_campus(data),
+            "generate_type": "normal",
+            "requires_input" : False,
+            "inputs": None,
             "save_type": "save_file",
-            "section": "campus"  
+            "section": "campus"
         },
         "Uniasselvi EaD": {
             "button_texts": ["Selecione Planilha Campus", "Selecione EXP campus"],
-            "generate_action": "process_uniasselvi_ead", 
+            "generate_action": lambda data: CampusController().process_uniasselvi_ead(data),
+            "generate_type": "normal",
+            "requires_input" : False,
+            "inputs": None,
             "save_type": "save_file",
             "section": "campus"
         },
         "Uniasselvi Presencial": {
             "button_texts": ["Selecione Planilha Campus", "Selecione EXP campus"],
-            "generate_action": "process_uniasselvi_presencial",
+            "generate_action": lambda data: CampusController().process_uniasselvi_presencial(data),
+            "generate_type": "normal",
+            "requires_input" : False,
+            "inputs": None,
             "save_type": "save_file", 
             "section": "campus"
         }
