@@ -14,7 +14,7 @@ class CardFactory:
 
 
     @staticmethod
-    def build(card_config: dict):
+    def build(card_config: dict,actions_config: dict):
         card_type = card_config["type"]
         card_class = CardFactory.CARD_TYPES.get(card_type, BaseCard)
 
@@ -23,5 +23,5 @@ class CardFactory:
         else:
             card = card_class(card_config["title"], card_config.get("description", ""))
 
-        card_controller = CardController(card)
+        card_controller = CardController(card,actions_config)
         return card, card_controller
