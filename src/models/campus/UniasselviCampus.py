@@ -1,8 +1,8 @@
-from MODELS.excel_file.SheetManipulation import SheetManipulation as sma
-from MODELS.excel_file.DataFrameUtils import DataFrameUtils as dfu
-from MODELS.campus.CampusMatchService import CampusMatchService as cms
-from MODELS.campus.CampusUpdate import CampusUpdate as cupdate
-from MODELS.campus.CampusVerifications import CampusVerifications as cvs
+from ..excel_file.SheetManipulation import SheetManipulation as sma
+from ..excel_file.DataFrameUtils import DataFrameUtils as dfu
+from ..campus.CampusMatchService import CampusMatchService as cms
+from ..campus.CampusUpdate import CampusUpdate as cupdate
+from ..campus.CampusVerifications import CampusVerifications as cvs
 import pandas as pd
 class UniasselviCampus:
     def __init__(self,exp_campus,campus,type_verification = 'EAD'):
