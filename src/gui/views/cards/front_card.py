@@ -81,3 +81,9 @@ class FrontCard(QFrame):
     def get_selector_buttons(self):
         return self.selector_buttons
     
+    def verify_all_paths_selected(self):
+        for path in self.paths.values():
+            if path is None:
+                return False
+        return True
+    
