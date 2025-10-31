@@ -53,19 +53,19 @@ class Notification():
         class LoadingDialog(QDialog):
             def __init__(self, parent, minimal_duration):
                 super().__init__(parent)
-                self.setModal(True)
                 self.setWindowTitle("Processando Tarefa")
                 self.setFixedSize(300, 100)
+                self.setWindowModality(Qt.ApplicationModal)
                 self.setWindowFlags(Qt.Dialog | Qt.WindowTitleHint)
-                
+
                 layout = QVBoxLayout(self)
                 self.processing_lbl = QLabel("Aguarde, executando tarefas...")
                 self.progress = QProgressBar()
                 self.progress.setRange(0, 0)
-                
+
                 layout.addWidget(self.processing_lbl)
                 layout.addWidget(self.progress)
-                
+
                 self.minimal_duration = minimal_duration
                 self.start_time = None
 
@@ -74,12 +74,13 @@ class Notification():
                 self.start_time = time.time()
 
             def safe_close(self):
+                if self.start_time is None:
+                    QTimer.singleShot(50, self.safe_close)
+                    return
+
                 elapsed = (time.time() - self.start_time) * 1000
                 remaining = max(0, self.minimal_duration - elapsed)
-                
-                if remaining > 0:
-                    QTimer.singleShot(int(remaining), self.accept)
-                else:
-                    self.accept()
+                QTimer.singleShot(int(remaining),
+                                  lambda: QMetaObject.invokeMethod(self, "accept", Qt.QueuedConnection))
 
         return LoadingDialog(parent, minimal_duration)
