@@ -49,12 +49,12 @@ class CardController():
         
         require_input = self.action_config.get("requires_input", False)
         if require_input:
-            inputs = self.action_config.get("inputs", [])
+            inputs = self.action_config.get("user_inputs", [])
             user_inputs = self.get_user_inputs(inputs, "Entradas Necessárias")
             if not user_inputs:
                 Notification.error("Cancelado", "Processo cancelado pelo usuário.")
                 return
-            data["inputs"] = user_inputs
+            data["user_inputs"] = user_inputs
             
         save_type = self.action_config.get("save_type","save_file")
         if save_type == "directory":
