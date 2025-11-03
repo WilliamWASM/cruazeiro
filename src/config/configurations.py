@@ -99,7 +99,7 @@ CARD_ACTIONS = {
             "generate_action": lambda data: UniversitiesController().process_unifatecie(data),
             "generate_type": "normal",
             "requires_input" : True,
-            "inputs": ["OSC","Data End"],
+            "inputs": ["Data End","OSC"],
             "save_type": "save_file",
             "section": "universities"
         },
