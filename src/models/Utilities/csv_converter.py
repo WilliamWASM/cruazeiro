@@ -1,5 +1,5 @@
 import os
-from MODELS.excel_file.SheetManipulation import SheetManipulation as sma
+from ...models.excel_file.SheetManipulation import SheetManipulation as sma
 from GUI.widgets.notifications import Notification 
 
 class CSVConverter:

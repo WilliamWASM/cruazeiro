@@ -1,9 +1,9 @@
 import os
 import pandas as pd
 import numpy as np
-from MODELS.excel_file.SheetManipulation import SheetManipulation as sma
-from MODELS.excel_file.DataFrameUtils import DataFrameUtils as dfu
-from MODELS.Utilities.dicionarios import lista_cidades
+from ...models.excel_file.SheetManipulation import SheetManipulation as sma
+from ...models.excel_file.DataFrameUtils import DataFrameUtils as dfu
+from ...models.Utilities.dicionarios import lista_cidades
 from GUI.widgets.notifications import Notification
 
 class CorrigirCidades:

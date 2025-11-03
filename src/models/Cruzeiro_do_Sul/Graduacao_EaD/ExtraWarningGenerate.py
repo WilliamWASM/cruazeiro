@@ -1,5 +1,5 @@
 import pandas as pd
-from MODELS.excel_file.DataFrameUtils import DataFrameUtils as dfu
+from ...excel_file.DataFrameUtils import DataFrameUtils as dfu
 class ExtraWarningGenerate:
     def __init__(self,msp_offers):
         self.msp_offers = msp_offers

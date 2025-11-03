@@ -1,7 +1,7 @@
 import pandas as pd
 import os
-from MODELS.excel_file.SheetManipulation import SheetManipulation as sma
-from MODELS.excel_file.DataFrameUtils import DataFrameUtils as dfu
+from ...models.excel_file.SheetManipulation import SheetManipulation as sma
+from ...models.excel_file.DataFrameUtils import DataFrameUtils as dfu
 from GUI.widgets.notifications import Notification 
 
 class KrotonLote:
@@ -11,10 +11,6 @@ class KrotonLote:
         self.exp_file = exp_file
         self.sheet = sma(self.exp_file)
         self.dataframe = self.sheet.load()
-        
-        # self.file = path
-        # self.sheet = sma(self.file)          # Crie o objeto SheetManipulation
-        # self.dataframe = self.sheet.load()   # Carregue o dataframe
 
 # Criar a coluna SKU na posição C (índice 2) - 
     def concat_sku_and_drop_duplicates(self):

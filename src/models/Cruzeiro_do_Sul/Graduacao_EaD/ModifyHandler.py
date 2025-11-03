@@ -1,7 +1,8 @@
-from MODELS.Cruzeiro_do_Sul.Graduacao_EaD.AdjustmentsOffersPattern import AdjustmentsOffersPattern
-from MODELS.Cruzeiro_do_Sul.Graduacao_EaD.InitialTreatments import InitialTreatments as it
-from MODELS.Cruzeiro_do_Sul.Graduacao_EaD.MspGenerate import MspGenerate as mgen
-from MODELS.excel_file.DataFrameUtils import DataFrameUtils as dfu
+from ..Graduacao_EaD.AdjustmentsOffersPattern import AdjustmentsOffersPattern
+from ..Graduacao_EaD.AdjustmentsOffersPattern import AdjustmentsOffersPattern
+from ..Graduacao_EaD.InitialTreatments import InitialTreatments as it
+from ..Graduacao_EaD.MspGenerate import MspGenerate as mgen
+from ...excel_file.DataFrameUtils import DataFrameUtils as dfu
 import pandas as pd
 class ModifyHandler:
     def __init__(self,offers,campus_relation,exp_campus):

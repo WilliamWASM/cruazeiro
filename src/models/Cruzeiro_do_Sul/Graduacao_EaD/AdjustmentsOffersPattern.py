@@ -1,5 +1,5 @@
-from MODELS.excel_file.SheetManipulation import SheetManipulation as sma
-from MODELS.excel_file.DataFrameUtils import DataFrameUtils as dfu
+from ...excel_file.SheetManipulation import SheetManipulation as sma
+from ...excel_file.DataFrameUtils import DataFrameUtils as dfu
 from datetime import date
 import numpy as np
 class AdjustmentsOffersPattern:

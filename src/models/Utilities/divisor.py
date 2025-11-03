@@ -1,6 +1,6 @@
 import os
-from MODELS.excel_file.SheetManipulation import SheetManipulation as sma
-from MODELS.excel_file.DataFrameUtils import DataFrameUtils as dfu
+from ...models.excel_file.SheetManipulation import SheetManipulation as sma
+from ...models.excel_file.DataFrameUtils import DataFrameUtils as dfu
 from GUI.widgets.notifications import Notification
 
 class TableDivisor:

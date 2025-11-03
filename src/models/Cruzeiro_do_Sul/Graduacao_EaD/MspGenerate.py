@@ -1,7 +1,7 @@
-from MODELS.excel_file.SheetManipulation import SheetManipulation as sma
-from MODELS.excel_file.DataFrameUtils import DataFrameUtils as dfu
-from MODELS.Cruzeiro_do_Sul.Graduacao_EaD import AdjustmentsOffersPattern as aop
-from MODELS.Cruzeiro_do_Sul.Graduacao_EaD.ExtraWarningGenerate import ExtraWarningGenerate as ewa
+from ...excel_file.SheetManipulation import SheetManipulation as sma
+from ...excel_file.DataFrameUtils import DataFrameUtils as dfu
+from ..Graduacao_EaD.AdjustmentsOffersPattern import AdjustmentsOffersPattern as aop
+from ..Graduacao_EaD.ExtraWarningGenerate import ExtraWarningGenerate as ewa
 import pandas as pd
 class MspGenerate:
     def __init__(self,campus_offers,campus_group):

@@ -1,7 +1,7 @@
+from ..excel_file.SheetManipulation import SheetManipulation as sma
+from ..excel_file.DataFrameUtils import DataFrameUtils as dfu
 import pandas as pd
 import openpyxl
-from MODELS.excel_file.SheetManipulation import SheetManipulation as sma
-from MODELS.excel_file.DataFrameUtils import DataFrameUtils as dfu
 
 class tecnicoCruzeiro:
     def __init__(self,file_offers,file_campus):
