@@ -22,7 +22,7 @@ class CruzeiroController:
             relation = paths[2]
 
             pos = PosGradEadCruzeiro(msp,exp,relation)
-            inputs = list(process_data["user_inputs"].values())
+            inputs = process_data["user_inputs"]
             pos.set_values_missing_in_msp(inputs[0],inputs[1],inputs[2])
             pos.load(save_path)
    
@@ -35,6 +35,6 @@ class CruzeiroController:
             exp = paths[2]
 
             grad = ModifyHandler(offers,relation,exp)
-            inputs = list(process_data["user_inputs"].values())
+            inputs = process_data["user_inputs"]
             grad.set_values(inputs[0],inputs[1],inputs[2])
             grad.load(save_path)
