@@ -11,7 +11,6 @@ class CardActionWorker:
         self.worker.signals.finished.connect(self.on_finished, Qt.QueuedConnection)
         self.worker.signals.error.connect(self.on_error, Qt.QueuedConnection)
         self.worker.signals.result.connect(self.on_result, Qt.QueuedConnection)
-        self.worker.signals.ask_input.connect(self.on_ask_input, Qt.BlockingQueuedConnection)
 
         self._result = None
         self._error = None
@@ -29,11 +28,6 @@ class CardActionWorker:
 
     def on_finished(self):
         self.dialog.safe_close()
-
-    def on_ask_input(self, payload):
-        fields, title, future = payload
-        result = Notification.get_inputs(fields, title, self.parent)
-        future.set_result(result)
 
     def show_result_notification(self):
         if self._error:
