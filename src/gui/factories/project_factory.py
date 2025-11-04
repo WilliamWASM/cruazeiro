@@ -11,13 +11,13 @@ class ProjectFactory:
         for section_name,cards_config in project_config.items():
             card_area = CardArea()
             section_cards = []
+            section_config = action_map.get(section_name,{})
 
             for card in cards_config:
-                action_config = action_map.get(section_name,{})
-                card, card_controller = CardFactory.build(card,action_config)
-                
-                if section_name == "Campus" and project_name == "SiteOps":
-                    card_controller.set_default_values(action_config["button_texts"])
+                card_title = card["title"]
+                card_action = section_config.get(card_title,{})
+                card, card_controller = CardFactory.build(card,card_action)
+                card_controller.set_default_values(card_action["button_texts"])
                 card_area.add_card(card)
                 card.setFixedSize(250,320)
                 section_cards.append(card)
