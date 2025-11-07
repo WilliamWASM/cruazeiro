@@ -32,7 +32,8 @@ class UtilitiesController:
         path = paths[0]
         save_path = process_data["save_path"]
 
-        selected = process_data["selected_text"]
-        div = TableDivisor(path,selected)
+        number_of_divisions = process_data["selected_value"]
+        number_of_divisions = int(number_of_divisions)
+        div = TableDivisor(path,number_of_divisions)
         div.create_files(save_path)
         
