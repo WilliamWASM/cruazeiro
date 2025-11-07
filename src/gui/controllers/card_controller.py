@@ -4,6 +4,7 @@ import os
 from functools import partial
 from ..views.notifications import *
 from ...workers.card_action_worker import *
+from ..views.cards.combo_box_card import ComboBoxCard
 class CardController():
     def __init__(self,card : BaseCard,action_config: dict):
         self.card = card
@@ -46,6 +47,20 @@ class CardController():
         
         paths = self.card.front.get_paths()
         data = {"paths": paths}
+        
+        require_input = self.action_config.get("requires_input", False)
+        if require_input:
+            fields = self.action_config.get("inputs", [])
+            user_inputs = self.get_user_inputs(fields, "Entradas Necessárias")
+            if not user_inputs:
+                Notification.error("Cancelado", "Processo cancelado pelo usuário.")
+                return
+            
+            data["user_inputs"] = user_inputs
+
+        if isinstance(self.card, ComboBoxCard):
+            selected_value = self.card.get_selected_value()
+            data["selected_value"] = selected_value
         
         require_input = self.action_config.get("requires_input", False)
         if require_input:
