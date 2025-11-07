@@ -1,7 +1,7 @@
 import os
 from ...models.excel_file.SheetManipulation import SheetManipulation as sma
 from ...models.excel_file.DataFrameUtils import DataFrameUtils as dfu
-from GUI.widgets.notifications import Notification
+from ...gui.views.notifications import Notification
 
 class TableDivisor:
     def __init__(self,excel_file,quantity_divisions):
@@ -22,4 +22,3 @@ class TableDivisor:
             dfu.save_dataframe(df_temp, os.path.join(path, f"{name_file}{i}.xlsx"), "Sheet 1") #save_dataframe
             self.table = dfu.drop_rows(self.table,range(0,self.rows_for_division)) #drop_rows
         dfu.save_dataframe(self.table, os.path.join(path, f"{name_file}{self.quantity_divisions}.xlsx"), "Sheet 1")
-        Notification.info("Arquivo Salvo",f"Arquivo salva na pasta {path}")

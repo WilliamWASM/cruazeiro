@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from ...models.excel_file.SheetManipulation import SheetManipulation as sma
 from ...models.excel_file.DataFrameUtils import DataFrameUtils as dfu
-from GUI.widgets.notifications import Notification 
+from ...gui.views.notifications import Notification 
 
 class KrotonLote:
     def __init__(self, exp_file, path_save):
@@ -45,8 +45,7 @@ class KrotonLote:
         try:
             dfu.save_multiple_dataframes([self.dataframe, self.tec_courses], self.save_path, ['graduação', 'técnico'])
         except Exception as e:
-            Notification.error("Error ao Salvar",f"Erro ao salvar o arquivo Excel: {e}")
-    
+            print (f"Erro durante o salvamento dos arquivos: {e}")
 
 
 

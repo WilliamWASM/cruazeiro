@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from ...models.excel_file.SheetManipulation import SheetManipulation as sma
 from ...models.excel_file.DataFrameUtils import DataFrameUtils as dfu
-from GUI.widgets.notifications import Notification 
+from ...gui.views.notifications import Notification 
 
 class RemoverDuplicadas:
     def __init__(self, excel_file):
@@ -58,6 +58,5 @@ class RemoverDuplicadas:
                 self.no_dup_file,
                 ["Sem Duplicadas", "Duplicadas"]
             )
-            Notification.info("Sucesso","Arquivo processado e salvo com sucesso!")
         except Exception as e:
-            Notification.error("Error ao Salvar",f"Erro ao salvar o arquivo Excel: {e}")
+            print (f"Erro durante o salvamento dos arquivos: {e}")

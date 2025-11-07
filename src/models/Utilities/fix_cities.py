@@ -4,7 +4,6 @@ import numpy as np
 from ...models.excel_file.SheetManipulation import SheetManipulation as sma
 from ...models.excel_file.DataFrameUtils import DataFrameUtils as dfu
 from ...models.Utilities.dicionarios import lista_cidades
-from GUI.widgets.notifications import Notification
 
 class CorrigirCidades:
     def __init__(self, xlsx_file):
@@ -45,7 +44,6 @@ class CorrigirCidades:
 
     def fix_cities(self):
         if self.df is None:
-            Notification.error("Erro ao carregar df","⚠️ Dados não carregados.")
             return
         for idx, row in self.df.iterrows():
             cidade, estado = row["city"], row["state"]
@@ -57,4 +55,3 @@ class CorrigirCidades:
     def executar(self):
         self.fix_cities()
         dfu.save_dataframe(self.df, self.fixed_file,"MSP_Cities_Fixed")
-        Notification.info("Correção de Cidades", f"✅ Correção de cidades concluída. Arquivo salvo como: {self.fixed_file}")

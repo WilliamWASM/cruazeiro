@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from GUI.widgets.notifications import Notification
+from ...gui.views.notifications import Notification
 from ...models.excel_file.SheetManipulation import SheetManipulation as sma
 from ...models.excel_file.DataFrameUtils import DataFrameUtils as dfu
 
@@ -169,6 +169,5 @@ class MSPConverter:
  
         try:
             dfu.save_dataframe(self.df, msp_file,"MSP")
-            Notification.info("Arquivo Salvo",f"\n✅ Arquivo {msp_file} criado com sucesso com a estrutura MSP!")
         except Exception as e:
-            Notification.error("Error ao Salvar",f"Erro ao salvar o arquivo Excel: {e}")
+            print (f"Erro durante o salvamento dos arquivos: {e}")

@@ -1,6 +1,6 @@
 import os
 from ...models.excel_file.SheetManipulation import SheetManipulation as sma
-from GUI.widgets.notifications import Notification 
+from ...gui.views.notifications import Notification 
 
 class CSVConverter:
     def __init__(self, csv_file: str):
@@ -12,4 +12,3 @@ class CSVConverter:
     
     def converter_para_excel(self):
         self.df_csv.to_excel(self.excel_file, index=False)
-        Notification.info("Arquivo Salvo",f"📁 Arquivo Excel salvo: {self.excel_file}")
