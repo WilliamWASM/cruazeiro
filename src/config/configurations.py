@@ -25,7 +25,7 @@ PROJECT_CONFIGS = {
                     {"type": "base","title":"Cruzeiro Graduação EaD","description":"Utilizado para gerar planilha da Unifatecie"},
                 ],
                 "Utilities": [
-                    {"type": "combo","title":"Dividir tabela","description":"Utilizado para gerar planilha da Unifatecie","items": [1,2,3,4,5,6,7,8,9]},
+                    {"type": "combo","title":"Dividir tabela","description":"Utilizado para gerar planilha da Unifatecie","items": ["2","3","4","5","6","7","8","9","10"]},
                     {"type": "base","title":"Exp para Msp","description":"Utilizado para gerar planilha da Unifatecie"},
                     {"type": "base","title":"Csv para Excel","description":"Utilizado para gerar planilha da Unifatecie"},
                 ]
@@ -37,7 +37,7 @@ PROJECT_CONFIGS = {
                     {"type": "base","title":"Uniasselvi Presencial","description":"Utilizado para gerar planilha da Unifatecie"}
                 ],
                 "Utilities": [
-                    {"type": "combo","title":"Dividir tabela","description":"Utilizado para gerar planilha da Unifatecie","items": [1,2,3,4,5,6,7,8,9]},
+                    {"type": "combo","title":"Dividir tabela","description":"Utilizado para gerar planilha da Unifatecie","items": ["2","3","4","5","6","7","8","9","10"]},
                     {"type": "base","title":"Exp para Msp","description":"Utilizado para gerar planilha da Unifatecie"},
                     {"type": "base","title":"Csv para Excel","description":"Utilizado para gerar planilha da Unifatecie"},
                 ]
@@ -149,7 +149,7 @@ CARD_ACTIONS = {
                 "generate_type": "normal",
                 "requires_input" : False,
                 "inputs": None,
-                "save_type": "save_file",
+                "save_type": "directory",
                 "section": "Utilities"
             },
             "Exp para Msp": {
@@ -235,3 +235,23 @@ CARD_ACTIONS = {
     }
 }
 
+HOME_INFOS = {
+    "app_version": "SiteOps Echo © v1.1.0",
+    "features": """
+        <ul>
+            <li>Novo sistema de notificações</li>
+            <li>Melhorias na interface gráfica</li>
+            <li>Adição de projetos (SiteOps e Comercial)</li>
+            <li>Modo light e dark</li>
+            <li>Correção de bugs</li>
+            <li>Notificação de carregamento do card</li>
+        </ul>
+    """,
+    "help_text": """
+        Envie uma mensagem no canal <b>#parcerias-estoque</b> do Slack,<br>
+        ou entre em contato com nossos desenvolvedores:<br>
+        <b>@davison.queiroz</b><br>
+        <b>@bruno.pelossi</b><br>
+        <b>@matheus.antonio</b>
+    """
+}
