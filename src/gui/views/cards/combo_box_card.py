@@ -11,3 +11,6 @@ class ComboBoxCard(BaseCard):
         self.combo_box.addItems(items)
         self.front.add_content(self.combo_box)
         self.front.redefine_component_order([self.combo_box, self.select_btn])
+
+    def get_selected_value(self):
+        return self.combo_box.currentText()
