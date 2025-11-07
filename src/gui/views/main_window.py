@@ -1,5 +1,6 @@
 from qt_core import *
 from .menu_bar import *
+from ...config.configurations import HOME_INFOS
 class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -33,19 +34,32 @@ class MainWindow(QWidget):
         self.content_layout = QStackedLayout(self.content_area) 
 
         self.menu_bar = MenuBar()
-
         self.central_layout.addWidget(self.menu_bar)
         self.central_layout.addWidget(self.content_area)  
 
         # -- content to home button -- 
         self.home_area = QWidget()
         self.home_layout = QVBoxLayout(self.home_area)
+        self.home_layout.setContentsMargins(30,30,0,0)
+        self.home_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        self.version_app = QLabel()
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)   
+        self.scroll_area.setWidget(self.home_area)
+
+        self.version_app = QLabel(f"Versão do App: {HOME_INFOS['app_version']}")
         self.title_feature = QLabel("Oque há de Novo:")
-        self.features_text = QLabel()
+        self.features_text = QLabel( HOME_INFOS['features'])
         self.title_help = QLabel("Ficou com dúvidas?")
-        self.help_section = QLabel()
+        self.help_section = QLabel(HOME_INFOS['help_text'])
+
+        title_labels = [self.title_feature, self.title_help]
+        info_labels = [ self.features_text, self.help_section]
+        for title in title_labels:
+            title.setStyleSheet("font-size: 20pt; font-weight: bold; margin-top: 20px;")
+        for info in info_labels:
+            info.setStyleSheet("font-size: 18px; margin-top: 10px;")
+            info.setWordWrap(True)
 
         self.home_layout.addWidget(self.version_app)
         self.home_layout.addWidget(self.title_feature)
@@ -53,7 +67,7 @@ class MainWindow(QWidget):
         self.home_layout.addWidget(self.title_help)
         self.home_layout.addWidget(self.help_section)
 
-        self.home_index = self.set_central_content(self.home_area)
+        self.home_index = self.set_central_content(self.scroll_area)
 
     def set_central_content(self, widget):
         index = self.content_layout.addWidget(widget)
