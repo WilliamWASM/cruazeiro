@@ -5,18 +5,14 @@ from ..controllers.card_controller import *
 from ...config.configurations import CARD_TYPES, CARD_ACTIONS
 
 class CardFactory:
-    CARD_TYPES = {
-        "base": BaseCard,
-        "combo": ComboBoxCard,
-        "extra": ExtraButtonCard,
-    }
+    card_types = CARD_TYPES
     card_actions = CARD_ACTIONS 
 
 
     @staticmethod
     def build(card_config: dict,actions_config: dict):
         card_type = card_config["type"]
-        card_class = CardFactory.CARD_TYPES.get(card_type, BaseCard)
+        card_class = CardFactory.card_types.get(card_type, BaseCard)
 
         if card_type == "combo":
             card = card_class(card_config["title"], card_config.get("items", []), card_config.get("description", ""))
