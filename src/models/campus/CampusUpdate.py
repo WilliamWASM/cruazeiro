@@ -6,6 +6,8 @@ class CampusUpdate:
     def __init__(self,campus_update,exp):
         self.campus_update = campus_update
         self.exp_verify = exp
+        self.columns_to_lower = ['name','name_from_university','address','city','neighborhood','address_adjunct']
+
 
     def _remove_extra_columns(self):
     # verificar a lista de colunas excedentes e remover
@@ -46,6 +48,9 @@ class CampusUpdate:
                         self.campus_update.at[idx, 'metadata_code'] = True
                     else:
                         self.campus_update.at[idx, 'metadata_code'] = exp_val + '#' + campus_val
+            elif column in self.columns_to_lower:
+                mask = self.campus_update[column].astype(str).str.lower().eq(self.exp_verify[column].astype(str).str.lower())
+                self.campus_update.loc[mask, column] = True     
             else:
                 mask = self.campus_update[column].eq(self.exp_verify[column])
                 self.campus_update.loc[mask, column] = True
