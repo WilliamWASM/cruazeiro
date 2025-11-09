@@ -8,6 +8,7 @@ from ..gui.controllers.sections.cruzeiro_controller import *
 from ..gui.controllers.sections.universities_controller import *
 from ..gui.controllers.sections.utilities_controller import *
 from ..gui.managers.file_manager import *
+from ..gui.views.cards.triple_button_card import *
 PROJECT_CONFIGS = {
             "SiteOps":{
                 "Universities":[
@@ -20,9 +21,9 @@ PROJECT_CONFIGS = {
                     {"type": "extra","title":"Uniasselvi Presencial","description":"Utilizado para gerar planilha da Unifatecie"}
                 ],
                 "Cruzeiro":[
-                    {"type": "base","title":"Cruzeiro Técnico","description":"Utilizado para gerar planilha da Unifatecie"},
-                    {"type": "base","title":"Cruzeiro Pós Graduação","description":"Utilizado para gerar planilha da Unifatecie"},
-                    {"type": "base","title":"Cruzeiro Graduação EaD","description":"Utilizado para gerar planilha da Unifatecie"},
+                    {"type": "extra","title":"Cruzeiro Técnico","description":"Utilizado para gerar planilha da Unifatecie"},
+                    {"type": "triple","title":"Cruzeiro Pós Graduação","description":"Utilizado para gerar planilha da Unifatecie"},
+                    {"type": "triple","title":"Cruzeiro Graduação EaD","description":"Utilizado para gerar planilha da Unifatecie"},
                 ],
                 "Utilities": [
                     {"type": "combo","title":"Dividir tabela","description":"Utilizado para gerar planilha da Unifatecie","items": ["2","3","4","5","6","7","8","9","10"]},
@@ -48,6 +49,7 @@ CARD_TYPES = {
         "base": BaseCard,
         "combo": ComboBoxCard,
         "extra": ExtraButtonCard,
+        "triple": TripleButtonCard
     }
 
 PROJECT_STYLES = {
