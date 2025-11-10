@@ -53,6 +53,7 @@ class MainWindowController():
             menus_to_add = []
             for section_name in menu_items:
                 menu_create = MenuItem(section_name)
+                menu_create.set_icon(section_name + "_icon")
                 menu_create.setProperty("project", project_name)
                 menus_to_add.append(menu_create)                
 
