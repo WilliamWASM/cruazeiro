@@ -18,13 +18,18 @@ class MenuBar(QWidget):
 
         # -- default components --
         self.menu_widget = QWidget()
-        self.menu_widget.setFixedHeight(42)
+        self.menu_widget.setFixedHeight(50)
         self.menu_layout_top = QHBoxLayout(self.menu_widget)
+        self.menu_layout_top.setContentsMargins(0,0,0,0)
         self.menu_layout_top.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop)
-        self.btn_menu = QPushButton("☰")
-        self.btn_menu.setFixedHeight(35)
+        self.btn_menu = QPushButton()
+        self.btn_menu.setIcon(QIcon("src/resources/icons/Menu_icon.png"))
+        self.btn_menu.setIconSize(QSize(24, 24))
+        self.btn_menu.setFixedHeight(46)
+        self.btn_menu.setMaximumWidth(88)
 
         self.toggle_container = QWidget()
+        self.toggle_container.setMaximumWidth(90)
         self.toggle_container.setFixedHeight(30)
         self.toggle_layout = QHBoxLayout(self.toggle_container) 
         self.toggle_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -35,9 +40,14 @@ class MenuBar(QWidget):
         self.toggle_mode.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         self.home_bar = QWidget()
+        self.home_bar.setFixedHeight(50)
         self.home_layout = QHBoxLayout(self.home_bar)
-        self.btn_home = QPushButton("🏠")
-        self.btn_home.setFixedHeight(35)
+        self.home_layout.setContentsMargins(0,0,0,0)
+        self.btn_home = QPushButton()
+        self.btn_home.setIcon(QIcon("src/resources/icons/Home_icon.png"))
+        self.btn_home.setIconSize(QSize(24, 24)) 
+        self.btn_home.setFixedHeight(46)
+
         self.cbox_projects = QComboBox()
 
         # -- menu items from project area --
