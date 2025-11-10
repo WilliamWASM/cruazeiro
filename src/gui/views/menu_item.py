@@ -1,4 +1,5 @@
 from qt_core import *
+from pathlib import Path
 class MenuItem(QFrame):
     clicked = Signal()
     def __init__(self,text_item):
@@ -50,3 +51,8 @@ class MenuItem(QFrame):
 
         if not self.selected:
             self.setStyleSheet(self.styles['default'])
+
+    def set_icon(self,name_icon):
+        icon_path = Path(__file__).resolve().parent.parent.parent / "resources" / "icons" / f"{name_icon}.png"
+        pixmap = QPixmap(str(icon_path))
+        self.icon.setPixmap(pixmap.scaled(self.icon.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
