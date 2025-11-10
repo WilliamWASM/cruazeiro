@@ -6,6 +6,8 @@ class FrontCard(QFrame):
         self.title = title
         self.card_layout = QVBoxLayout(self)
         self.card_layout.setContentsMargins(0,0,0,0)
+        self.card_layout.setSizeConstraint(QLayout.SetMinimumSize)
+
         self.card_layout.setSpacing(0) 
         self.components = {}
         self.default_buttons = []
@@ -16,12 +18,15 @@ class FrontCard(QFrame):
         self.top_content_layout = QHBoxLayout(self.top_content)
         self.top_content_layout.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.top_content_layout.setSpacing(20)
-        self.top_content_layout.setContentsMargins(0, 0, 20, 0)
+        self.top_content_layout.setContentsMargins(10, 0, 15, 0)
         self.title_card = QLabel(title)
+        self.title_card.setProperty("label","title_card")
+        self.title_card.setWordWrap(True)
+        self.title_card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
+        self.title_card.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.info_btn = QPushButton("i")
         self.info_btn.setFixedSize(25,25)
         self.top_content_layout.addWidget(self.title_card)
-        self.top_content_layout.addSpacerItem(QSpacerItem(20, 0, QSizePolicy.Fixed, QSizePolicy.Minimum))
         self.top_content_layout.addWidget(self.info_btn)
         
 
@@ -85,5 +90,4 @@ class FrontCard(QFrame):
         for path in self.paths.values():
             if path is None:
                 return False
-        return True
-    
+        return True    

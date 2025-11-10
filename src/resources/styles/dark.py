@@ -63,6 +63,15 @@ class ComercialDarkStyles:
         return card
     
     @staticmethod
+    def card_title():
+        return f"""
+                QLabel[label="title_card"] {{
+                    font-size: 18px;
+                    font-weight: bold;
+                }}
+            """
+    
+    @staticmethod
     def menu_item():
         menu_item = {
             'default' : f"""
@@ -182,6 +191,15 @@ class SiteOpsDarkStyles:
             """
         }
         return card
+    
+    @staticmethod
+    def card_title():
+        return f"""
+                QLabel[label="title_card"] {{
+                    font-size: 18px;
+                    font-weight: bold;
+                }}
+            """
     
     @staticmethod
     def menu_item():
