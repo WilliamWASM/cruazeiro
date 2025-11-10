@@ -53,3 +53,7 @@ class BaseCard(QFrame):
     def set_style_back_card(self,card_style: dict):
         self.back.setStyleSheet(card_style['card'])
         self.back.get_flip_button().setStyleSheet(card_style['ask_button'])
+
+    def set_style_titles(self,style):
+        self.back.title_card.setStyleSheet(style)
+        self.front.title_card.setStyleSheet(style)
