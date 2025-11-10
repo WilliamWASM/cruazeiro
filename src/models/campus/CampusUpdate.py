@@ -8,7 +8,6 @@ class CampusUpdate:
         self.exp_verify = exp
         self.columns_to_lower = ['name','name_from_university','address','city','neighborhood','address_adjunct']
 
-
     def _remove_extra_columns(self):
     # verificar a lista de colunas excedentes e remover
         if not self.campus_update.empty:
@@ -44,12 +43,16 @@ class CampusUpdate:
                 for idx in self.campus_update.index:
                     campus_val = str(self.campus_update.at[idx, 'metadata_code'])
                     exp_val = str(self.exp_verify.at[idx, 'metadata_code'])
+                    if campus_val == 'nan' and exp_val == 'nan':
+                        self.campus_update.at[idx, 'metadata_code'] = True
+                    if campus_val == 'nan' and exp_val != 'nan':
+                        self.campus_update.at[idx,'metadata_code'] = True
                     if campus_val in exp_val.split('#'):
                         self.campus_update.at[idx, 'metadata_code'] = True
                     else:
                         self.campus_update.at[idx, 'metadata_code'] = exp_val + '#' + campus_val
-            elif column in self.columns_to_lower:
-                mask = self.campus_update[column].astype(str).str.lower().eq(self.exp_verify[column].astype(str).str.lower())
+            if column in self.columns_to_lower:
+                mask = self.campus_update[column].astype(str).str.lower().str.strip().eq(self.exp_verify[column].astype(str).str.lower().str.strip())
                 self.campus_update.loc[mask, column] = True     
             else:
                 mask = self.campus_update[column].eq(self.exp_verify[column])
