@@ -12,23 +12,23 @@ from ..gui.views.cards.triple_button_card import *
 PROJECT_CONFIGS = {
             "SiteOps":{
                 "Universities":[
-                    {"type": "base","title":"Unifatecie","description":"Utilizado para gerar planilha da Unifatecie"},
-                    {"type": "base","title":"Kroton Lote","description":"Utilizado para gerar planilha da Unifatecie"}
+                    {"type": "base","title":"Unifatecie","description":"- Selecione a planilha de ofertas da IES.\n- Clique em Gerar.\n- Preencha Data End e OSC(s).\n- Nomeie o arquivo que será gerado."},
+                    {"type": "base","title":"Kroton Lote","description":"- Selecione a planilha de ofertas da IES.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar."}
                 ],
                 "Campus":[
-                    {"type": "extra","title":"Campus","description":"Utilizado para gerar planilha da Unifatecie"},
-                    {"type": "extra","title":"Uniasselvi EaD","description":"Utilizado para gerar planilha da Unifatecie"},
-                    {"type": "extra","title":"Uniasselvi Presencial","description":"Utilizado para gerar planilha da Unifatecie"}
+                    {"type": "extra","title":"Campus","description":"- Selecione a MSP de Campus.\n- Selecione o Exp de Campus.\n- Clique em Gerar.\nn- Selecione o diretório e nome para o arquivo queserá gerado."},
+                    {"type": "extra","title":"Uniasselvi EaD","description":"- Selecione a Planilha da IES.\n- Selecione o Exp de Campus.\n- Clique em Gerar.\n- Selecione o diretório e nome para o arquivo queserá gerado."},
+                    {"type": "extra","title":"Uniasselvi Presencial","description":"- Selecione a Planilha da IES.\n- Selecione o Exp de Campus.\n- Clique em Gerar.\n- Selecione o diretório e nome para o arquivo queserá gerado."}
                 ],
                 "Cruzeiro":[
-                    {"type": "extra","title":"Cruzeiro Técnico","description":"Utilizado para gerar planilha da Unifatecie"},
-                    {"type": "triple","title":"Cruzeiro Pós Graduação","description":"Utilizado para gerar planilha da Unifatecie"},
-                    {"type": "triple","title":"Cruzeiro Graduação EaD","description":"Utilizado para gerar planilha da Unifatecie"},
+                    {"type": "extra","title":"Cruzeiro Técnico","description":"- Selecione a MSP de Ofertas.\n- Selecione o Exp de Campus.\n- Clique em Gerar.\n- Selecione o diretório e nome para arquivo gerado."},
+                    {"type": "triple","title":"Cruzeiro Pós Graduação","description":"- Selecione a MSP de Ofertas.\n- Selecione o Exp de Campus.\n- Selecione a Relação com os polos que devem ser separados.\n- Clique em Gerar.\n- Preencha os valores solicitados.\n- Selecione o diretório e nome para arquivo gerado."},
+                    {"type": "triple","title":"Cruzeiro Graduação EaD","description":"- Selecione a Planilha de Ofertas.\n- Selecione a Relação de Cursos.\n- Selecione o Exp de Campus.\n- Clique em Gerar.\n- Preencha os valores solicitados.\n- Selecione o diretório e nome para arquivo gerado."},
                 ],
                 "Utilities": [
-                    {"type": "combo","title":"Dividir tabela","description":"Utilizado para gerar planilha da Unifatecie","items": ["2","3","4","5","6","7","8","9","10"]},
-                    {"type": "base","title":"Exp para Msp","description":"Utilizado para gerar planilha da Unifatecie"},
-                    {"type": "base","title":"Csv para Excel","description":"Utilizado para gerar planilha da Unifatecie"},
+                    {"type": "combo","title":"Dividir tabela","description":"- Selecione a quantidade de divisões que deseja.\n- Selecione a planilha.\n- Clique em Gerar.\n- Escolha o diretório onde deseja salvar o arquivo.\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado.","items": ["2","3","4","5","6","7","8","9","10"]},
+                    {"type": "base","title":"Exp para Msp","description":"- Selecione a planilha modelo Exp.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar o arquivo.\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado."},
+                    {"type": "base","title":"Csv para Excel","description":"- Selecione a planilha CSV.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar o arquivo.\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado."},
                 ]
             },
             "Comercial":{
