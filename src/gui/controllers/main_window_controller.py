@@ -115,6 +115,8 @@ class MainWindowController():
     def on_theme_toggled(self, checked):
         self.theme_manager.toggle_theme()
         self.reapply_all_styles()
+        home_index = self.main_window.get_home_index()
+        self.main_window.content_layout.setCurrentIndex(home_index)
 
     def reapply_all_styles(self):
         self.apply_object_name_and_styles()  
