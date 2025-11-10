@@ -107,6 +107,7 @@ class MainWindowController():
                 for card in cards: 
                     card.set_style_front_card(style_class.card()) 
                     card.set_style_back_card(style_class.card()) 
+                    card.set_style_titles(style_class.card_title())
             for menu in menu_items:
                 menu.set_styles(style_class.menu_item())
                 menu.clicked.connect(lambda checked=False, m=menu: self.on_menu_clicked(m))
