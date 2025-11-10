@@ -23,7 +23,9 @@ class BackCard(QFrame):
         self.bottom_content_layout = QVBoxLayout(self.bottom_content)
         self.bottom_content_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.scroll_descript = QScrollArea()
-        self.scroll_descript.setWidgetResizable(True)   
+        self.scroll_descript.setWidgetResizable(True)  
+        self.scroll_descript.setWidget(self.bottom_content)
+
         self.scroll_descript.setWidget(self.bottom_content)
 
         self.card_layout.addWidget(self.top_content,1)
@@ -37,5 +39,7 @@ class BackCard(QFrame):
         self.desc_label = QLabel(description)
         self.desc_label.setWordWrap(True)
         self.desc_label.setStyleSheet('font-size: 14px;')
+        self.desc_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
+        self.desc_label.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.bottom_content_layout.addWidget(self.desc_label)
         
