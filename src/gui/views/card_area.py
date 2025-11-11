@@ -15,7 +15,9 @@ class CardArea(QWidget):
         self.top_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.bottom_area = QWidget()
         self.bottom_layout = QHBoxLayout(self.bottom_area)
-        self.bottom_layout.setSpacing(20)
+        self.bottom_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.bottom_layout.setSpacing(50)
+        self.bottom_layout.setContentsMargins(30,10,30,0)
 
         self.card_layout.addWidget(self.top_area,1)
         self.card_layout.addWidget(self.bottom_area,1)
