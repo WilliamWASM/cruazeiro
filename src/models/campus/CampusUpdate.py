@@ -39,6 +39,9 @@ class CampusUpdate:
         for column in columns_update:
             if column in ['id','university_id']:
                 continue
+            if column == "address_number":
+                mask = self.campus_update[column].astype(str).eq(self.exp_verify[column].astype(str))
+                self.campus_update.loc[mask, column] = True
             if column == 'metadata_code':
                 for idx in self.campus_update.index:
                     campus_val = str(self.campus_update.at[idx, 'metadata_code'])
