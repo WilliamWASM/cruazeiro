@@ -87,6 +87,18 @@ PROJECT_CONFIGS = {
                         "description":"- Selecione a planilha CSV.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar o arquivo."
                         "\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado."
                     },
+                    {
+                        "type": "base",
+                        "title":"Remover Duplicadas",
+                        "description":"- Selecione a planilha de ofertas.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar o arquivo."
+                        "\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado."
+                    },
+                    {
+                        "type": "base",
+                        "title":"Duplicada UnivOffer",
+                        "description":"- Selecione a planilha de ofertas.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar o arquivo."
+                        "\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado."
+                    }
                 ]
             },
             "Comercial":{
@@ -129,6 +141,18 @@ PROJECT_CONFIGS = {
                         "type": "base",
                         "title":"Csv para Excel",
                         "description":"- Selecione a planilha CSV.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar o arquivo."
+                        "\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado."
+                    },
+                    {
+                        "type": "base",
+                        "title":"Remover Duplicadas",
+                        "description":"- Selecione a planilha de ofertas.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar o arquivo."
+                        "\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado."
+                    },
+                    {
+                        "type": "base",
+                        "title":"Duplicada UnivOffer",
+                        "description":"- Selecione a planilha de ofertas.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar o arquivo."
                         "\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado."
                     },
                 ]
@@ -261,6 +285,24 @@ CARD_ACTIONS = {
                 "inputs": None,
                 "save_type": "directory",
                 "section": "Utilities"
+            },
+            "Remover Duplicadas": {
+                "button_texts": ["Selecione Ofertas"],
+                "generate_action": lambda data: UtilitiesController().process_dup(data),
+                "generate_type": "normal",
+                "requires_input" : False,
+                "inputs": None,
+                "save_type": "directory",
+                "section": "Utilities"
+            },
+            "Duplicada UnivOffer": {
+                "button_texts": ["Selecione Ofertas"],
+                "generate_action": lambda data: UtilitiesController().process_dup_univ_offer(data),
+                "generate_type": "normal",
+                "requires_input" : False,
+                "inputs": None,
+                "save_type": "directory",
+                "section": "Utilities"
             }
         }  
     },
@@ -316,6 +358,24 @@ CARD_ACTIONS = {
             "Csv para Excel": {
                 "button_texts": ["Selecione Planilha CSV"],
                 "generate_action": lambda data: UtilitiesController().process_csv_converter(data),
+                "generate_type": "normal",
+                "requires_input" : False,
+                "inputs": None,
+                "save_type": "directory",
+                "section": "Utilities"
+            },
+            "Remover Duplicadas": {
+                "button_texts": ["Selecione Ofertas"],
+                "generate_action": lambda data: UtilitiesController().process_dup(data),
+                "generate_type": "normal",
+                "requires_input" : False,
+                "inputs": None,
+                "save_type": "directory",
+                "section": "Utilities"
+            },
+            "Duplicada UnivOffer": {
+                "button_texts": ["Selecione Ofertas"],
+                "generate_action": lambda data: UtilitiesController().process_dup_univ_offer(data),
                 "generate_type": "normal",
                 "requires_input" : False,
                 "inputs": None,
