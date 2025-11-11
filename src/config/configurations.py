@@ -397,6 +397,7 @@ HOME_INFOS = {
             <li>Modo light e dark</li>
             <li>Correção de bugs</li>
             <li>Notificação de carregamento do card</li>
+            <li>Adição de card para remover duplicadas de UnivOffer</li>
         </ul>
     """,
     "help_text": """
