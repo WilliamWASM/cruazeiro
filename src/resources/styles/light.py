@@ -253,7 +253,7 @@ class SiteOpsLightStyles:
                 color: {SiteOpsLightStyles.COLOR4};
             }}
             QComboBox QAbstractItemView {{
-            j    background-color: transparent;        
+                background-color: transparent;        
                 color: {SiteOpsLightStyles.COLOR4};                   
                 selection-background-color: {SiteOpsLightStyles.COLOR8};
             }}

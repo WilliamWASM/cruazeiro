@@ -49,6 +49,7 @@ class MenuBar(QWidget):
         self.btn_home.setFixedHeight(46)
 
         self.cbox_projects = QComboBox()
+        self.cbox_projects.setStyleSheet('color: #F5F5F5;')
 
         # -- menu items from project area --
         self.menu_area = QWidget()
