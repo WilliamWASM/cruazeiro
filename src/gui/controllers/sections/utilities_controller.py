@@ -2,6 +2,7 @@ from ....models.Utilities.exp_msp import *
 from ....models.Utilities.duplicates import *
 from ....models.Utilities.csv_converter import *
 from ....models.Utilities.divisor import *
+from ....models.Utilities.university_offer import *
 
 class UtilitiesController:
     def process_exp_msp(self,process_data:dict):
@@ -36,4 +37,11 @@ class UtilitiesController:
         number_of_divisions = int(number_of_divisions)
         div = TableDivisor(path,number_of_divisions)
         div.create_files(save_path)
+
+    def process_dup_univ_offer(self,process_data:dict):
+        paths = list(process_data["paths"].values())
+        
+        path = paths[0]
+        dup = RemoverUniversityOfferDuplicates(path)
+        dup.execute()
         
