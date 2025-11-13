@@ -9,12 +9,17 @@ class CampusMatchService:
 
     def execute_verifications(self):
         self._init_treatments()
-        if self._verify_metadata_exists():
+        if self._verify_metadata_exists() and not self.msp_campus.empty:
             self._metadata_verifications()
         elif not self.msp_campus.empty and self._verify_name_ies_exists():
             self._name_verifications()
         elif not self.msp_campus.empty and self._sku_exists():
             self._sku_verifications()
+        if not self.campus_update.empty:
+            slug_columns = ['name','name_from_university']
+            for column in slug_columns:
+                if column in self.campus_update.columns:
+                    self._slug_treatments(self.campus_update,column)
         return self.campus_update,self.msp_campus
     
     def _metadata_verifications(self):
@@ -55,12 +60,15 @@ class CampusMatchService:
     def _init_treatments(self):
         self._separate_have_id()
         self._lower_all_columns_have_string()
-        self._slug_treatment()
+        slug_columns = ['name','name_from_university']
+        for column in slug_columns:
+            if column in self.exp_verify.columns:
+                self._slug_treatments(self.exp_verify,column)
+            if column in self.msp_campus.columns:
+                self._slug_treatments(self.msp_campus,column)
 
-    def _slug_treatment(self):
-        self.exp_verify['name'] = self.exp_verify['name'].str.replace(r'[^\w\s]|_', '', regex=True)
-        if not self.msp_campus.empty and 'name' in self.msp_campus.columns:
-            self.msp_campus['name'] = self.msp_campus['name'].str.replace(r'[^\w\s]|_', '', regex=True)
+    def _slug_treatments(self,dataframe,column_name):
+        dataframe[column_name] = dataframe[column_name].str.replace(r'[^\w\s]|_', '', regex=True)
 
     def _lower_all_columns_have_string(self):
             cols = ['name','name_from_university','address','address_adjunct','neighborhood','city']
@@ -95,6 +103,8 @@ class CampusMatchService:
                     self.msp_campus = pd.DataFrame()
 
         if column_search == 'metadata_code':
+            self.msp_campus['metadata_code'] = self.msp_campus['metadata_code'].astype(str) 
+            self.exp_verify['metadata_code'] = self.exp_verify['metadata_code'].astype(str) 
             campus_verif = dfu.xlookup_contains(self.msp_campus,self.exp_verify,column_search,column_search,'id','id')
             _verify_have_nulls(campus_verif)
         else:
