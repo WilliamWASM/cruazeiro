@@ -12,7 +12,6 @@ class CardController():
         self.default_values_buttons = {}
         self.action_config = action_config
 
-
         self.selector_buttons = self.card.front.get_selector_buttons()
         for button in self.selector_buttons:
             button.clicked.connect(partial(self.get_selection, button))
@@ -61,16 +60,6 @@ class CardController():
         if isinstance(self.card, ComboBoxCard):
             selected_value = self.card.get_selected_value()
             data["selected_value"] = selected_value
-        
-        require_input = self.action_config.get("requires_input", False)
-        if require_input:
-            fields = self.action_config.get("inputs", [])
-            user_inputs = self.get_user_inputs(fields, "Entradas Necessárias")
-            if not user_inputs:
-                Notification.error("Cancelado", "Processo cancelado pelo usuário.")
-                return
-            
-            data["user_inputs"] = user_inputs
             
         save_type = self.action_config.get("save_type","save_file")
         if save_type == "directory":
