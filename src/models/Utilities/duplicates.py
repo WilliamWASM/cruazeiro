@@ -40,7 +40,8 @@ class RemoverDuplicadas:
         else:
             raise ValueError("Tipo de tabela não reconhecido")
 
-    def execute(self):
+
+    def get_duplicates(self):
         print(self.type_table)
 
         base_nome = os.path.splitext(os.path.basename(self.excel_file))[0]
@@ -49,6 +50,9 @@ class RemoverDuplicadas:
         colunas_para_comparacao = self.set_columns_to_compare()
         self.df_no_dup= dfu.remove_duplicates_by_columns(self.df,colunas_para_comparacao)
         self.df_dup = dfu.get_duplicates_by_column(self.df,colunas_para_comparacao)
+
+    def execute(self):
+        self.get_duplicates()
         self.save()
 
     def save(self):
