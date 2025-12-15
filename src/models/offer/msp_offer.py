@@ -60,11 +60,12 @@ class CheckAnyErrorFromOfferSheet:
         remover_dup_offer = ruod(self.excel_file)
         remover_dup_offer.df = self.no_dup_df
         remover_dup_offer.get_offer_duplicates()
+        remover_dup_offer.get_path()
         if remover_dup_offer.df_high_full_price.empty:
             self.no_dup_offer_df = remover_dup_offer.df_low_full_price
             dfu.save_dataframe(self.no_dup_offer_df, remover_dup_offer.output_file, "Sem Duplicatas")
         else:
-            dfu.save_multiple_dataframes([self.df_low_full_price, self.df_high_full_price], self.output_file, ["Menor Preço", "Maior Preço"])
+            dfu.save_multiple_dataframes([remover_dup_offer.df_low_full_price, remover_dup_offer.df_low_full_price], remover_dup_offer.output_file, ["Menor Preço", "Maior Preço"])
 
     def execute(self):
         self.generate_error_missing_columns()
