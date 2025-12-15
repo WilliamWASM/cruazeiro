@@ -23,8 +23,9 @@ class CruzeiroController:
 
             pos = PosGradEadCruzeiro(msp,exp,relation)
             inputs = process_data["user_inputs"]
+            pos.load()
             pos.set_values_missing_in_msp(inputs[0],inputs[1],inputs[2])
-            pos.load(save_path)
+            pos.save(save_path)
    
     def process_grad(self,process_data:dict):
             paths = list(process_data["paths"].values())
