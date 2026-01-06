@@ -424,7 +424,7 @@ CARD_ACTIONS = {
 }
 
 HOME_INFOS = {
-    "app_version": "SiteOps Echo © v1.1.0",
+    "app_version": "SiteOps Echo © v1.2.0",
     "features": """
         <ul>
             <li>Novo sistema de notificações</li>
@@ -434,6 +434,8 @@ HOME_INFOS = {
             <li>Correção de bugs</li>
             <li>Notificação de carregamento do card</li>
             <li>Adição de card para remover duplicadas de UnivOffer</li>
+            <li>Adição de Menu de Ofertas para o projeto Comercial</li>
+            <li>Adição de Cards para checagens dos modelos MSP e EXP referente as Ofertas</li>
         </ul>
     """,
     "help_text": """
