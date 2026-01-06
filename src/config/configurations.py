@@ -259,9 +259,9 @@ CARD_ACTIONS = {
                 "generate_action": lambda data: CruzeiroController().process_pos(data),
                 "generate_type": "normal",
                 "requires_input" : True,
-                "inputs": ["Semestre de Ingresso","Data End", "OSC"],
+                "inputs": ["Data End","OSC", "Semestre de Ingresso"],
                 "user_inputs": [],
-                "save_type": "save_file",
+                "save_type": "directory",
                 "section": "Cruzeiro"
             },
             "Cruzeiro Graduação EaD": {
