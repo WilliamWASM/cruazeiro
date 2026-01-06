@@ -15,9 +15,16 @@ class SheetManipulation:
         "estacio_campus": ["external_id","name","address","address_number","address_adjunct"],
         "cruzeiro_offers_to_campus": ['ID_POLO','NOME_POL','NM_FANTA','NOM_FILI','TIPO_POLO','SIT_POLO'],
         "cruzeiro_offers": ["CHAVE 1","CHAVE 2","SUBCATEGORIA","CURSO","GRAU","PREÇO PARCELAS"]
-
-
     }
+
+    required_headers = {
+        "msp_offers_general" : ["ID da IES", "ID do Campus", "Nome do Curso", "Grau", "Modalidade", "Turno", "Tipo de duração do curso", "Duração do Curso", "Quantidade de Parcelas", "Qual valor usar?\n% ou R$", "Mensalidade sem desconto", "Data de Início da Oferta", "Data de Fim da Oferta", "LIMITADA?", "Quantidade de Vagas", "Semestre de Ingresso"],
+        "msp_offers_offered_price": ["Mensalidade com desconto", "Porcentagem de desconto da bolsa (Fixo/1 º Semestre)"],
+        "msp_offers_IES_discount": ["Mensalidade balcão", "Porcentagem de desconto IES"],
+        "exp_offers_general": ["university_id", "campus_id", "name_from_university", "level", "kind", "shift", "enrollment_semester", "commercial_discount", "max_periods", "max_payments", "full_price", "start", "end", "limited", "total_seats"],
+        "exp_offers_offered_price": ["offered_price","discount_percentage"]
+    }
+    
     def __init__(self,path,sheet_name = None):
         self.path = path
         self.sheet_name = sheet_name
@@ -59,7 +66,7 @@ class SheetManipulation:
             return False
         
     def _set_sheet_type(self):
-        headers_found = self._get_headers()
+        headers_found = self.get_headers()
         for sheet_type,expected_headers in self.HEADERS.items():
             if all(header in headers_found for header in expected_headers):
                 self.sheet_type = sheet_type
@@ -71,7 +78,7 @@ class SheetManipulation:
             self._set_sheet_type()
         return self.sheet_type
     
-    def _get_headers(self):
+    def get_headers(self):
         if self.file_type == ".xlsx":
             workbook = load_workbook(self.path,read_only=True,data_only=True)
             sheet = workbook[self.sheet_name] if self.sheet_name else workbook.active()
@@ -285,7 +292,7 @@ class SheetManipulation:
        'Benefício 2 (Chave OSC)', 'Avisos', 'Benefícios Extras', 'Campanha',
        'Frequência das aulas', 'Taxa de matrícula', 'Data de início das aulas',
        'Carga horária do Curso (em horas)', 'TCC Obrigatório?', 'Restrita?',
-       'Tipo de restrição (systems:)', 'ecode_pool_name', 'COD CURSO',
+       'Tipo de restrição (systems:)', 'Nota Enem', 'ecode_pool_name', 'COD CURSO',
        'COD IES', 'COD CAMPUS', 'COD TIPO GRAD', 'COD TURNO', 'COD CURSO PAI',
        'COD CAMPUS PAI', 'CONCURSO', 'CodCursoVest', 'CodCursoIES',
        'NomeCurso', 'TurnoMetadata', 'CURRICULO', 'CodCampus', 'CodCampanha',

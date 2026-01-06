@@ -38,8 +38,10 @@ class MSPConverter:
             'campaign': 'Campanha',
             'restricted': 'Restrita?',
             'systems': 'Tipo de restrição (systems:)',
+            'enem_grade': 'Nota Enem',
             'ecode_pool_name': 'ecode_pool_name'
         }
+
         self.remove_columns = [
             'offer_id', 'campus_name', 'name', 'regressive_discount',
             'real_discount', 'created_at', 'paid_seats', 'reserved_seats',
@@ -49,6 +51,7 @@ class MSPConverter:
             'passing_grade', 'external_id', 'uuid', 'show_on_main_search',
             'stock_type'
         ]
+
         self.extra_columns = [
             ('Qual valor usar? % ou R$', 'Quantidade de Parcelas', ''),
             ('Porcentagem total de desconto da bolsa (2º Semestre)', 'Porcentagem de desconto da bolsa (Fixo/1º Semestre)', ''),
@@ -77,6 +80,7 @@ class MSPConverter:
             ('affiliate_link', 'CodCampanha', ''),
             ('tags', 'affiliate_link', '')
         ]
+
         self.metadata_mapping = {
             'code': 'COD CURSO',
             'campus_code': 'COD CAMPUS',
@@ -96,10 +100,12 @@ class MSPConverter:
             'affiliate_link': 'affiliate_link',
             'tags': 'tags'
         }
+
         self.course_metadata_mapping = {
             'total_hours': 'Carga horária do Curso (em horas)',
             'obligatory_monograph': 'TCC Obrigatório?'
         }
+        
         self.clean_columns = [
             'Qual valor usar? % ou R$', 'Mensalidade com desconto',
             'Porcentagem de desconto da bolsa (Fixo/1º Semestre)', 'regressive_discount',

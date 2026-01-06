@@ -36,9 +36,15 @@ class RemoverUniversityOfferDuplicates:
         self.df_low_full_price = self.df[mask_equal]
         self.df_high_full_price = self.df.drop(self.df_low_full_price.index)
     
-    def execute(self):
-        base_name = os.path.splitext(os.path.basename(self.excel_file))[0]
-        self.output_file = os.path.join(os.path.dirname(self.excel_file), f"Offers_by_sku_{base_name}.xlsx")
+    def get_offer_duplicates(self):
         self._get_sku_by_type()
         self._compare_prices_by_sku()
+
+    def get_path(self):
+        base_name = os.path.splitext(os.path.basename(self.excel_file))[0]
+        self.output_file = os.path.join(os.path.dirname(self.excel_file), f"Offers_by_sku_{base_name}.xlsx")
+
+    def execute(self):
+        self.get_path()
+        self.get_offer_duplicates()
         dfu.save_multiple_dataframes([self.df_low_full_price, self.df_high_full_price], self.output_file, ["Menor Preço", "Maior Preço"])

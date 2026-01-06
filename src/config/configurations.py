@@ -7,6 +7,7 @@ from ..gui.controllers.sections.campus_controller import *
 from ..gui.controllers.sections.cruzeiro_controller import *
 from ..gui.controllers.sections.universities_controller import *
 from ..gui.controllers.sections.utilities_controller import *
+from ..gui.controllers.sections.offer_controller import *
 from ..gui.managers.file_manager import *
 from ..gui.views.cards.triple_button_card import *
 PROJECT_CONFIGS = {
@@ -121,6 +122,21 @@ PROJECT_CONFIGS = {
                         "description":"- Selecione a Planilha da IES.\n- Selecione o Exp de Campus."
                         "\n- Clique em Gerar.\n- Selecione o diretório e nome para o arquivo queserá gerado."
                     }
+                ],
+                "Ofertas": [
+                    { 
+                        "type": "base",
+                        "title": "Checar Planilha MSP",
+                        "description": "- Selecione a planilha de ofertas MSP.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar o arquivo."
+                        "\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado."
+                    },
+                    { 
+                        "type": "base",
+                        "title": "Checar Planilha EXP",
+                        "description": "- Selecione a planilha de ofertas EXP.\n- Clique em Gerar.\n- Selecione o diretório onde deseja salvar o arquivo."
+                        "\n\nIMPORTANTE: O arquivo será gerado no diretório selecionado, com nome pré-configurado."
+                    }
+                   
                 ],
                 "Utilities": [
                     {
@@ -334,6 +350,26 @@ CARD_ACTIONS = {
                 "inputs": None,
                 "save_type": "save_file", 
                 "section": "Campus"
+            }
+        },
+        "Ofertas": {
+            "Checar Planilha MSP": {
+                "button_texts": ["Selecione a Planilha MSP"],
+                "generate_action": lambda data: OfferController().process_offer_msp(data),
+                "generate_type": "normal",
+                "requires_input": False,
+                "inputs": None,
+                "save_type": "save_file",
+                "section": "Ofertas"
+            },
+            "Checar Planilha EXP": {
+                "button_texts": ["Selecione a Planilha EXP"],
+                "generate_action": lambda data: OfferController().process_offer_exp(data),
+                "generate_type": "normal",
+                "requires_input": False,
+                "inputs": None,
+                "save_type": "save_file",
+                "section": "Ofertas"
             }
         },
         "Utilities": {
