@@ -9,15 +9,15 @@ class MenuBarController():
         self.projects = projects
         self._create_projects()
 
-        self.menu_bar.cbox_projects.setCurrentIndex(0)
-        self.active_project = self.menu_bar.cbox_projects.currentText()
-
         self.menu_bar.cbox_projects.currentIndexChanged.connect(
             self.menu_bar.menu_layout.setCurrentIndex
         )
         self.menu_bar.cbox_projects.currentTextChanged.connect(self.set_active_project)
 
         self.menu_bar.get_menu_button().clicked.connect(self.toggle_width)
+
+        self.menu_bar.cbox_projects.setCurrentIndex(0)
+        self.active_project = self.menu_bar.cbox_projects.currentText()
 
     def _create_projects(self):
         for project in self.projects:
