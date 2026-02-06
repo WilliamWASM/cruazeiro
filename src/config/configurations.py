@@ -105,19 +105,19 @@ PROJECT_CONFIGS = {
             "Comercial":{
                 "Campus":[
                     {
-                        "type": "base",
+                        "type": "extra",
                         "title":"Campus",
                         "description":"- Selecione a MSP de Campus.\n- Selecione o Exp de Campus."
                         "\n- Clique em Gerar.\nn- Selecione o diretório e nome para o arquivo queserá gerado."
                     },
                     {
-                        "type": "base",
+                        "type": "extra",
                         "title":"Uniasselvi EaD",
                         "description":"- Selecione a Planilha da IES.\n- Selecione o Exp de Campus."
                      "\n- Clique em Gerar.\n- Selecione o diretório e nome para o arquivo queserá gerado."
                     },
                     {
-                        "type": "base",
+                        "type": "extra",
                         "title":"Uniasselvi Presencial",
                         "description":"- Selecione a Planilha da IES.\n- Selecione o Exp de Campus."
                         "\n- Clique em Gerar.\n- Selecione o diretório e nome para o arquivo queserá gerado."
@@ -379,7 +379,7 @@ CARD_ACTIONS = {
                 "generate_type": "normal",
                 "requires_input" : False,
                 "inputs": None,
-                "save_type": "save_file",
+                "save_type": "directory",
                 "section": "Utilities"
             },
             "Exp para Msp": {
