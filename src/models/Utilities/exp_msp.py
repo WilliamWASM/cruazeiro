@@ -119,7 +119,6 @@ class MSPConverter:
     def convert(self):
         self._remove_unwanted_columns()
         self._rename_columns()
-        self._insert_empty_column_after('Nome da IES', 'v5.0 10/01')
         self._insert_extra_columns()
         self._metadata_dist('metadata', self.metadata_mapping)
         self._metadata_dist('course_metadata', self.course_metadata_mapping)
