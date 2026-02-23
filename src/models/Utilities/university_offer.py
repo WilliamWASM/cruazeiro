@@ -22,6 +22,20 @@ class RemoverUniversityOfferDuplicates:
         else:
             raise ValueError("Tipo de tabela não reconhecido")
 
+    def _compare_prices_by_discount(self):
+        if (self.type_table == "msp_offers"):
+            discount_type = "Porcentagem de desconto da bolsa (Fixo/1 º Semestre)"
+        elif  (self.type_table == "exp_offers"):
+            discount_type = "discount_percentage"
+        else:
+            raise ValueError("Tipo de tabela não reconhecido")
+        lower_index = self.df.groupby('sku')[discount_type].idxmin()
+        
+        df_min_price = self.df.groupby('sku')[discount_type].transform('max')
+        mask_equal = self.df[discount_type] == df_min_price
+        self.df_low_discount_percentage = self.df[mask_equal]
+        self.df_high_discount_percentage = self.df.drop(self.df_low_discount_percentage.index)
+
     def _compare_prices_by_sku(self):
         if (self.type_table == "msp_offers"):
             price_type = "Mensalidade sem desconto"
@@ -38,7 +52,22 @@ class RemoverUniversityOfferDuplicates:
     
     def get_offer_duplicates(self):
         self._get_sku_by_type()
-        self._compare_prices_by_sku()
+    
+        if self.type_table == "msp_offers":
+            price_column = "Mensalidade sem desconto"
+            discount_column = "Porcentagem de desconto da bolsa (Fixo/1 º Semestre)"
+        elif self.type_table == "exp_offers":
+            price_column = "full_price"
+            discount_column = "discount_percentage"
+        else:
+            raise ValueError("Tipo de tabela não reconhecido")
+        
+        has_price_difference = (self.df.groupby('sku')[price_column].nunique() > 1).any()
+        
+        if has_price_difference:
+            self._compare_prices_by_sku()
+        else:
+            self._compare_prices_by_discount()
 
     def get_path(self):
         base_name = os.path.splitext(os.path.basename(self.excel_file))[0]
