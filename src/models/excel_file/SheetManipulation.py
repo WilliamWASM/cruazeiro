@@ -13,8 +13,8 @@ class SheetManipulation:
         "exp_campus" : ["id", "name", "education_group_id", "metadata_code", "match_codes"],
         "lote_kroton" : ["CHAVE", "LOTE", "IES", "COD_OFERTA_POLO", "DIA DA SEMANA"],
         "estacio_campus": ["external_id","name","address","address_number","address_adjunct"],
-        "cruzeiro_offers_to_campus": ['ID_POLO','NOME_POL','NM_FANTA','NOM_FILI','TIPO_POLO','SIT_POLO'],
-        "cruzeiro_offers": ["CHAVE 1","CHAVE 2","SUBCATEGORIA","CURSO","GRAU","PREÇO PARCELAS"]
+        "cruzeiro_offers_to_campus": ['ID_POLO','NOME_POL','CIDADE','ESTADO','NOM_FILI','COD_INST'],
+        "cruzeiro_offers": ["Cód. IES","Cód. Campus","Cód. Curso","Curso","GRAU","Preço SIAA"]
     }
 
     required_headers = {
@@ -222,8 +222,7 @@ class SheetManipulation:
     def set_cruzeiro_offers_to_campus_dtype(self):
         self.dtype = {
             'ID_POLO' : str,
-            'COD_CURS' : str,
-            'ID_POLO_HUB' : str
+            'COD_INST' : str
         }
 
     def xlsx_is_ready(self):
@@ -337,8 +336,8 @@ class SheetManipulation:
     
     def adjust_columns_offers_cruzeiro(self,dataframe):
         values_columns = [
-            "PORCENTAGEM DE DESCONTO",
-            "DESCONTO GARANTIDO "
+            "Porcentagem com Desconto 1° ano",
+            "Desconto Garantido Demais Semestres"
         ]
         lambda_apply = lambda x: f"{x:.2f}"
         dataframe.update({

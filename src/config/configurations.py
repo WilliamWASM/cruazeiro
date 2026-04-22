@@ -269,7 +269,7 @@ CARD_ACTIONS = {
                 "generate_action": lambda data: CruzeiroController().process_grad(data),
                 "generate_type": "normal",
                 "requires_input" : True,
-                "inputs": ["Data End","OSC", "Semestre de Ingresso"],
+                "inputs": ["Semestre de Ingresso", "Data End", "OSC"],
                 "save_type": "save_file",
                 "section": "Cruzeiro"
             }
