@@ -1,102 +1,167 @@
-from ...excel_file.SheetManipulation import SheetManipulation as sma
 from ...excel_file.DataFrameUtils import DataFrameUtils as dfu
-from ..Graduacao_EaD.AdjustmentsOffersPattern import AdjustmentsOffersPattern as aop
 from ..Graduacao_EaD.ExtraWarningGenerate import ExtraWarningGenerate as ewa
 import pandas as pd
+
 class MspGenerate:
-    def __init__(self,campus_offers,campus_group):
+
+    FINAL_COLUMNS = [
+        'commercial_discount', 'university_regressive_discount', 'discount_percentage',
+        'real_discount', 'regressive_discount', 'regressive_commercial_discount',
+        'first_regressive_discount', 'second_regressive_discount', 'last_regressive_discount',
+        'offered_price', 'name_from_university', 'university_name', 'university_id',
+        'campus_name', 'campus_id', 'name', 'level', 'kind', 'shift', 'period_kind',
+        'max_periods', 'COD SIAA', 'full_price', 'start', 'end', 'limited', 'total_seats',
+        'offer_special_conditions', 'offer_extra_warning', 'enrollment_semester',
+        'max_payments', 'metadata', 'course_metadata', 'offer_extra_benefit'
+    ]
+
+    def __init__(self, campus_offers, campus_group, campus_virtual):
         self.campus_offers = campus_offers
         self.campus_group = campus_group
-        self.columns_map = {
-            'CERTIFICADORA':'Nome da IES',
-            'NOME_POL':'Nome do Campus',
-            'CURSO':'Nome do Curso',
-            'GRAU':'Grau',
-            'MODALIDADE':'Modalidade',
-            'DURACAO':'Duração do Curso',
-            'PRECO_PARCELAS':'Mensalidade sem desconto',
-            'PORCENTAGEM_DESCONTO':'Porcentagem de desconto da bolsa (Fixo/1 º Semestre)',
-            'COD_CURSO':'COD CURSO',
-            'ID_POLO':'COD CAMPUS',
-            'COD_IES': 'COD IES'
-        }
+        self.campus_virtual = campus_virtual
 
-    def _verify_regression(self):
-        if self.campus_offers.empty:
-            raise ValueError("ERRO! Nenhuma oferta encontrada. Verifique se os códigos de curso da planilha de relação correspondem aos da planilha de ofertas.")
+    def _set_campus_ids(self):
+        # campus_id recebe o id do marketplace (lookup_group), não o ID_POLO da IES
+        self.campus_offers['campus_id'] = self.campus_offers['lookup_group']
+
+    def _get_enrollment_period(self):
         try:
-            semester = str(self.campus_offers['Semestre de Ingresso'].iloc[0])
-            if "." in semester:
-                enrollment = semester.split(".")[1]
-                return int(enrollment)
-        except Exception as e:
-            raise ValueError(f"ERRO! Semestre de ingresso inválido: {e}")
+            semester = str(self.campus_offers.iloc[0]['Semestre de Ingresso'])
+            return int(semester.split('.')[1]) if '.' in semester else 2
+        except Exception:
+            return 2
 
-    def _set_regression(self):
-        regression = self._verify_regression()
-        if regression == 1:
-            self.campus_offers['Porcentagem total de desconto da bolsa\n(2º Semestre)'] = self.campus_offers['PORCENTAGEM_DESCONTO']
+    def _to_ies_discount(self, series):
+        s = pd.to_numeric(
+            series.astype(str).str.replace(',', '.', regex=False),
+            errors='coerce'
+        ).fillna(0) - 0.05
+        return s.map(lambda x: f"{x:.2f}")
 
-    def _adjusts_discounts(self):
-        self._set_regression()
-        self.campus_offers.rename(columns=self.columns_map,inplace=True)
-        if 'Porcentagem total de desconto da bolsa\n(2º Semestre)' in self.campus_offers.columns:
-            self.campus_offers.rename(columns={'DESCONTO_GARANTIDO':'Porcentagem total de desconto da bolsa\n(3º Semestre)'}, inplace=True)
-            self.campus_offers['Porcentagem de desconto IES (1º semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem de desconto da bolsa (Fixo/1 º Semestre)'])
-            self.campus_offers['Porcentagem de desconto IES (2º semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem total de desconto da bolsa\n(2º Semestre)'])
-            self.campus_offers['Porcentagem de desconto IES (3º semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem total de desconto da bolsa\n(3º Semestre)'])
+    def _process_discounts(self):
+        period = self._get_enrollment_period()
+
+        # Renomeia colunas principais para os nomes finais
+        self.campus_offers.rename(columns={
+            'NOM_FILI': 'name_from_university',
+            'NOME_POL': 'campus_name',
+            'CURSO': 'name',
+            'GRAU': 'level',
+            'METODOLOGIA': 'kind',
+            'DURAÇÃO': 'max_periods',
+            'PREÇO PARCELAS': 'full_price',
+        }, inplace=True)
+
+        if period == 1:
+            # Semestre .1: desconto do 2º = mesmo do 1º; regressão só no 3º (próximo janeiro)
+            self.campus_offers['_second_disc'] = self.campus_offers['PORCENTAGEM DE DESCONTO']
+            self.campus_offers['_last_disc'] = self.campus_offers['DESCONTO GARANTIDO']
         else:
-            self.campus_offers.rename(columns={'DESCONTO_GARANTIDO':'Porcentagem total de desconto da bolsa\n(2º Semestre)'}, inplace=True)
-            self.campus_offers['Porcentagem de desconto IES (1º semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem de desconto da bolsa (Fixo/1 º Semestre)'])
-            self.campus_offers['Porcentagem de desconto IES (2º semestre)'] = self._generate_formatted_percentage_column(self.campus_offers['Porcentagem total de desconto da bolsa\n(2º Semestre)'])
+            # Semestre .2: já regride no 2º semestre (próximo janeiro)
+            self.campus_offers['_second_disc'] = self.campus_offers['DESCONTO GARANTIDO']
+            self.campus_offers['_last_disc'] = self.campus_offers['DESCONTO GARANTIDO']
 
-    def _generate_formatted_percentage_column(self,series):
-        series_float = series.astype(str).str.replace(',', '.', regex=False).astype(float)
-        series_float = series_float - 0.05
-        return series_float.map(lambda x: f"{x:.2f}")
+        # Descontos comerciais (IES) = desconto do aluno - 5%
+        self.campus_offers['commercial_discount'] = self._to_ies_discount(
+            self.campus_offers['PORCENTAGEM DE DESCONTO'])
+        self.campus_offers['regressive_commercial_discount'] = self._to_ies_discount(
+            self.campus_offers['_second_disc'])
+        self.campus_offers['university_regressive_discount'] = self._to_ies_discount(
+            self.campus_offers['_last_disc'])
+
+        # Aliases de desconto do aluno
+        self.campus_offers['discount_percentage'] = self.campus_offers['PORCENTAGEM DE DESCONTO']
+        self.campus_offers['regressive_discount'] = self.campus_offers['_second_disc']
+
+    def _compute_derived_values(self):
+        fp = pd.to_numeric(
+            self.campus_offers['full_price'].astype(str).str.replace(',', '.', regex=False),
+            errors='coerce'
+        ).fillna(0)
+        dp = pd.to_numeric(
+            self.campus_offers['PORCENTAGEM DE DESCONTO'].astype(str).str.replace(',', '.', regex=False),
+            errors='coerce'
+        ).fillna(0)
+
+        self.campus_offers['offered_price'] = (fp * (1 - dp)).round(2)
+        self.campus_offers['real_discount'] = (fp * dp).round(2)
+
+        self.campus_offers['COD SIAA'] = self.campus_offers['CÓDIGO SIAA']
+        self.campus_offers['metadata'] = (
+            'code:' + self.campus_offers['COD_CURS'].astype(str) +
+            ';campus_code:' + self.campus_offers['ID_POLO'].astype(str) +
+            ';cod_ies:' + self.campus_offers['CÓDIGO DA IES'].astype(str)
+        )
+
+        self.campus_offers['total_seats'] = None
+        self.campus_offers['max_payments'] = None
+        self.campus_offers['offer_extra_benefit'] = None
 
     def _fill_in_remaining_values(self):
-        self.campus_offers = dfu.xlookup(self.campus_offers,self.campus_group,'Nome da IES','university_name','university_id','ID da IES')
+        # university_id via nome normalizado da IES → university_name no campus_group
+        self.campus_offers = dfu.xlookup(
+            self.campus_offers, self.campus_group,
+            'name_from_university', 'university_name', 'university_id', 'university_id'
+        )
+        # university_name completo via campus_id → id no campus_group
+        self.campus_offers = dfu.xlookup(
+            self.campus_offers, self.campus_group,
+            'campus_id', 'id', 'university_name', 'university_name'
+        )
+        # Gera o aviso conforme modalidade
         self.campus_offers = ewa(self.campus_offers).load()
 
-    def _remaining_columns(self):
-        cols_in_df = list(self.campus_offers.columns)
-        cols_in_df.remove('Porcentagem total de desconto da bolsa\n(2º Semestre)')
-        idx_ref = cols_in_df.index('Porcentagem de desconto da bolsa (Fixo/1 º Semestre)') + 1
-        cols_in_df.insert(idx_ref,'Porcentagem total de desconto da bolsa\n(2º Semestre)')
-        self.campus_offers = self.campus_offers[cols_in_df]
+    def _generate_virtual_offers(self):
+        # Somente polos presentes no campus_virtual recebem oferta virtual
+        virtual_mask = self.campus_offers['lookup_3719'].notna()
+        self.offers_virtual = self.campus_offers[virtual_mask].copy()
 
-    def _split_group_and_virtual(self):
-        has_group = self.campus_offers['lookup_group'].notna()
-        has_3719 = self.campus_offers['lookup_3719'].notna()
-        self.offers_grupo = self.campus_offers[has_group].copy().reset_index(drop=True)
-        self.offers_3719 = self.campus_offers[has_3719].copy().reset_index(drop=True)
-        self.offers_grupo['COD CAMPUS'] = self.offers_grupo['lookup_group']
-        self.offers_grupo['Nome do Campus'] = self.offers_grupo['campus_name_group']
-        self.offers_3719['Avisos'] = self.offers_3719['Avisos'] + " | Certificado pela " + self.offers_3719['Nome da IES']
-        self.offers_3719['ID da IES'] = '3719'
-        self.offers_3719['Nome da IES'] = 'Cruzeiro Virtual'
-        self.offers_3719['COD CAMPUS'] = self.offers_3719['lookup_3719']
-        self.offers_3719['Nome do Campus'] = self.offers_3719['campus_name_3719']
+        self.offers_virtual['campus_id'] = self.offers_virtual['lookup_3719']
+        # Re-resolve university_name pelo campus do 3719
+        self.offers_virtual = dfu.xlookup(
+            self.offers_virtual, self.campus_virtual,
+            'campus_id', 'id', 'university_name', 'university_name'
+        )
+        self.offers_virtual['Avisos'] = (
+            self.offers_virtual['Avisos'] + " | Certificado pela " +
+            self.offers_virtual['name_from_university']
+        )
+        self.offers_virtual['university_id'] = '3719'
+        self.offers_virtual['name_from_university'] = 'Cruzeiro Virtual'
 
-    def _drop_extra_columns(self):
-        cols_to_drop = ['COD_INST','NOM_FILI','CIDADE','ESTADO','lookup_group','lookup_3719','campus_name_group','campus_name_3719']
-        existing_grupo = [c for c in cols_to_drop if c in self.offers_grupo.columns]
-        existing_3719 = [c for c in cols_to_drop if c in self.offers_3719.columns]
-        self.offers_grupo = self.offers_grupo.drop(columns=existing_grupo)
-        self.offers_3719 = self.offers_3719.drop(columns=existing_3719)
+        # campus_offers fica apenas com as linhas que têm campus no grupo
+        self.campus_offers = self.campus_offers[
+            self.campus_offers['lookup_group'].notna()
+        ].reset_index(drop=True)
 
-    def _drop_unused_columns(self):
-        empty_grupo = [col for col in self.offers_grupo.columns if self.offers_grupo[col].isna().all()]
-        empty_3719 = [col for col in self.offers_3719.columns if self.offers_3719[col].isna().all()]
-        self.offers_grupo = self.offers_grupo.drop(columns=empty_grupo)
-        self.offers_3719 = self.offers_3719.drop(columns=empty_3719)
+    def _finalize_dataframe(self, df):
+        # Renomeia os últimos nomes intermediários para o formato final
+        final_rename = {
+            'PORCENTAGEM DE DESCONTO': 'first_regressive_discount',
+            '_second_disc': 'second_regressive_discount',
+            '_last_disc': 'last_regressive_discount',
+            'Turno': 'shift',
+            'Tipo de duração do curso': 'period_kind',
+            'LIMITADA?': 'limited',
+            'Data de Início da Oferta': 'start',
+            'Data de Fim da Oferta': 'end',
+            'Benefício 1 (Chave OSC)': 'offer_special_conditions',
+            'Semestre de Ingresso': 'enrollment_semester',
+            'Avisos': 'offer_extra_warning',
+        }
+        df = df.rename(columns=final_rename)
+        # Garante que todas as colunas finais existam (vazio se ausente)
+        for col in self.FINAL_COLUMNS:
+            if col not in df.columns:
+                df[col] = None
+        return df[self.FINAL_COLUMNS].reset_index(drop=True)
 
     def load(self):
-        self._adjusts_discounts()
+        self._set_campus_ids()
+        self._process_discounts()
+        self._compute_derived_values()
         self._fill_in_remaining_values()
-        self._remaining_columns()
-        self._split_group_and_virtual()
-        self._drop_extra_columns()
-        self._drop_unused_columns()
-        return self.offers_grupo,self.offers_3719
+        self._generate_virtual_offers()
+        offers_group = self._finalize_dataframe(self.campus_offers)
+        offers_virtual = self._finalize_dataframe(self.offers_virtual)
+        return offers_group, offers_virtual

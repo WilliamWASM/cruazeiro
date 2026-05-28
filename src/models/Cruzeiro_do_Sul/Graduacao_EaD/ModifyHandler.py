@@ -21,24 +21,39 @@ class ModifyHandler:
         self.campus_group = self.list_treated[2]
         self.campus_virtual = self.list_treated[3]
         self.campus_offers_undefined = self.list_treated[4]
+        self.not_totally_group = self.list_treated[5]
+        self.not_totally_virtual = self.list_treated[6]
 
-    def set_values(self,enrollment_semester,end_date,special_condition):
+    def set_values(self,end_date,special_condition,enrollment_semester):
         adj_offers = AdjustmentsOffersPattern(self.offers,self.offers_to_campus,enrollment_semester,end_date,special_condition)
         self.offers_to_campus = adj_offers.load()
+        if not self._verify_if_empty(self.not_totally_group):
+            adj_not_tot_group = AdjustmentsOffersPattern(self.offers,self.not_totally_group,enrollment_semester,end_date,special_condition)
+            self.not_totally_group = adj_not_tot_group.load()
+        if not self._verify_if_empty(self.not_totally_virtual):
+            adj_not_tot_virtual = AdjustmentsOffersPattern(self.offers,self.not_totally_virtual,enrollment_semester,end_date,special_condition)
+            self.not_totally_virtual = adj_not_tot_virtual.load()
 
     def _generate_msp(self):
-        offers_msp = mgen(self.offers_to_campus,self.campus_group)
-        self.offers_grupo,self.offers_3719 = offers_msp.load()
+        offers_msp = mgen(self.offers_to_campus, self.campus_group, self.campus_virtual)
+        self.offers_group, self.offers_virtual = offers_msp.load()
 
     def load(self,fullpath):
         self._generate_msp()
-        dataframes = [self.offers_grupo,self.offers_3719]
-        sheet_names = ['Ofertas Grupo','Ofertas 3719']
+        # Abas principais separadas por IES
+        sheets = [self.offers_group, self.offers_virtual]
+        names = ['Ofertas Grupo', 'Ofertas 3719']
+        # Abas auxiliares (somente se não vazias)
         if not self._verify_if_empty(self.campus_offers_undefined):
-            dataframes.append(self.campus_offers_undefined)
-            sheet_names.append('campi_not_found')
-        dfu.save_multiple_dataframes(dataframes,fullpath,sheet_names)
+            sheets.append(self.campus_offers_undefined)
+            names.append('campi_not_found')
+        if not self._verify_if_empty(self.not_totally_group):
+            sheets.append(self.not_totally_group)
+            names.append('apenas_no_virtual')
+        if not self._verify_if_empty(self.not_totally_virtual):
+            sheets.append(self.not_totally_virtual)
+            names.append('criar_no_3719')
+        dfu.save_multiple_dataframes(sheets, fullpath, names)
 
     def _verify_if_empty(self,dataframe):
         return dataframe.empty
-        

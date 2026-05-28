@@ -13,8 +13,8 @@ class SheetManipulation:
         "exp_campus" : ["id", "name", "education_group_id", "metadata_code", "match_codes"],
         "lote_kroton" : ["CHAVE", "LOTE", "IES", "COD_OFERTA_POLO", "DIA DA SEMANA"],
         "estacio_campus": ["external_id","name","address","address_number","address_adjunct"],
-        "cruzeiro_offers_to_campus": ['ID_POLO','NOME_POL','CIDADE','ESTADO','NOM_FILI','COD_INST'],
-        "cruzeiro_offers": ["Cód. IES","Cód. Campus","Cód. Curso","Curso","GRAU","Preço SIAA"]
+        "cruzeiro_offers_to_campus": ['ID_POLO','NOME_POL','NOM_FILI','COD_INST'],
+        "cruzeiro_offers": ["Cód. IES","Cód. Curso","Curso","GRAU","Preço SIAA"]
     }
 
     required_headers = {
@@ -136,9 +136,9 @@ class SheetManipulation:
             except Exception as e:
                 raise ValueError (f"Erro ao carregar planilha Excel: {e}")
         elif self.sheet_type == "cruzeiro_offers":
-            print('reconheceu a offers de cruzeiro')
+            self.set_cruzeiro_offers_dtype()
             try:
-                dataframe = pd.read_excel(self.path,sheet_name=self.sheet_name)
+                dataframe = pd.read_excel(self.path,sheet_name=self.sheet_name,dtype=self.dtype)
                 return self.adjust_columns_offers_cruzeiro(dataframe)
             except Exception as e:
                 raise ValueError (f"Erro ao carregar planilha Excel: {e}")
@@ -222,7 +222,11 @@ class SheetManipulation:
     def set_cruzeiro_offers_to_campus_dtype(self):
         self.dtype = {
             'ID_POLO' : str,
-            'COD_INST' : str
+        }
+
+    def set_cruzeiro_offers_dtype(self):
+        self.dtype = {
+            'Cód. Curso' : str,
         }
 
     def xlsx_is_ready(self):

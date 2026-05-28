@@ -14,17 +14,7 @@ class AdjustmentsOffersPattern:
         self.shift_map = {
             '100% EAD':	'EaD',
             'SEMIPRESENCIAL': 'Semipresencial',
-            'AO VIVO': 'Ao vivo',
-            'Digital': 'EaD'
-        }
-        self.name_ies_map = {
-            'Unicid - Graduação Ead': 'UNICID',
-            'Cruzeiro - Graduação Ead': 'UNICSUL - Cruzeiro do Sul',
-            'Unifran - Graduação Ead': 'UNIFRAN',
-            'Fsg - Graduação Ead': 'FSG',
-            'Unipê - Graduação Ead': 'UNIPÊ',
-            'Braz Cubas - Graduação Ead': 'Brazcubas',
-            'Positivo - Graduação Ead': 'Universidade Positivo'
+            'AO VIVO': 'Ao vivo'
         }
         self.enrollment_semester = enrollment_semester
         self.end_date = end_date
@@ -33,7 +23,7 @@ class AdjustmentsOffersPattern:
         self.offers_to_campus = offers_to_campus
 
     def _adjusts_offers(self):
-        self.offers_to_campus = self._multiples_xlookup(self.offers_to_campus,self.offers)
+        self.offers_to_campus = self._multiples_xlookup(self.offers_to_campus, self.offers)
         self.offers_to_campus = self._columns_treatment(self.offers_to_campus)
         self.offers_to_campus['Semestre de Ingresso'] = self.enrollment_semester
         self.offers_to_campus['Turno'] = 'Virtual'
@@ -41,43 +31,39 @@ class AdjustmentsOffersPattern:
         self.offers_to_campus['Qual valor usar?\n% ou R$'] = 'porcentagem'
         self.offers_to_campus['LIMITADA?'] = 'FALSE'
         self.offers_to_campus['Data de Fim da Oferta'] = self.end_date
-        oscs = str(self.special_condition).split('|')
-        self.offers_to_campus['Benefício 1 (Chave OSC)'] = oscs[0].strip()
-        self.offers_to_campus['Benefício 2 (Chave OSC)'] = oscs[1].strip() if len(oscs) > 1 else None
-        self.offers_to_campus['Data de Início da Oferta'] = self.get_date_actually()
+        self.offers_to_campus['Benefício 1 (Chave OSC)'] = self.special_condition
+        self.offers_to_campus.loc[:, 'Data de Início da Oferta'] = self.get_date_actually()
 
     def _remove_nan_offers(self):
         self.offers_to_campus['GRAU'] = (self.offers_to_campus['GRAU'].replace(['nan', 'NaN', 'None', 'NULL', 'null', ''], np.nan))
-        self.offers_to_campus = dfu.drop_rows_have_nulls(self.offers_to_campus,'GRAU')
+        self.offers_to_campus = dfu.drop_rows_have_nulls(self.offers_to_campus, 'GRAU')
 
-    def _multiple_replaces(self,dataframe,header,values_dict: dict):
+    def _multiple_replaces(self, dataframe, header, values_dict: dict):
         for original_value, new_value in values_dict.items():
-            dataframe = dfu.replace_series(dataframe,header,original_value,new_value)
+            dataframe = dfu.replace_series(dataframe, header, original_value, new_value)
         return dataframe
 
-    def _multiples_xlookup(self,dataframe_base,dataframe_search):
-        dataframe_base['COD_CURSO'] = dataframe_base['COD_CURSO'].astype(str).str.upper().str.replace(r'\.0$', '', regex=True).str.strip().apply(lambda x: x.lstrip('0') if x != '0' else x)
-        dataframe_search['Cód. Curso'] = dataframe_search['Cód. Curso'].astype(str).str.upper().str.replace(r'\.0$', '', regex=True).str.strip().apply(lambda x: x.lstrip('0') if x != '0' else x)
-        dataframe = dfu.xlookup(dataframe_base,dataframe_search,'COD_CURSO','Cód. Curso','GRAU','GRAU')
-        dataframe = dfu.xlookup(dataframe_base,dataframe_search,'COD_CURSO','Cód. Curso','Modalidade','MODALIDADE')
-        dataframe = dfu.xlookup(dataframe_base,dataframe_search,'COD_CURSO','Cód. Curso','Duração','DURACAO')
-        dataframe = dfu.xlookup(dataframe_base,dataframe_search,'COD_CURSO','Cód. Curso','Preço SIAA','PRECO_PARCELAS')
-        dataframe = dfu.xlookup(dataframe_base,dataframe_search,'COD_CURSO','Cód. Curso','Porcentagem com Desconto 1° ano','PORCENTAGEM_DESCONTO')
-        dataframe = dfu.xlookup(dataframe_base,dataframe_search,'COD_CURSO','Cód. Curso','Desconto Garantido Demais Semestres','DESCONTO_GARANTIDO')
-        dataframe = dfu.xlookup(dataframe_base,dataframe_search,'COD_CURSO','Cód. Curso','Cód. IES','COD_IES')
-        dataframe = dfu.xlookup(dataframe_base,dataframe_search,'COD_CURSO','Cód. Curso','Curso','CURSO')
-        dataframe = dfu.xlookup(dataframe_base,dataframe_search,'COD_CURSO','Cód. Curso','Certificadora','CERTIFICADORA')
+    def _multiples_xlookup(self, dataframe_base, dataframe_search):
+        # Cruzamento por COD_CURS (polo) ↔ Cód. Curso (oferta) — novo formato UPLOAD_GRAD_EAD
+        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'GRAU', 'GRAU')
+        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Modalidade', 'METODOLOGIA')
+        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Duração', 'DURAÇÃO')
+        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Preço SIAA', 'PREÇO PARCELAS')
+        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Porcentagem com Desconto 1° ano', 'PORCENTAGEM DE DESCONTO')
+        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Desconto Garantido Demais Semestres', 'DESCONTO GARANTIDO')
+        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Cód. IES', 'CÓDIGO DA IES')
+        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Curso', 'CURSO')
+        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Código SIAA', 'CÓDIGO SIAA')
         return dataframe
 
     def get_date_actually(self):
         today = date.today()
         return today.strftime("%d/%m/%Y")
 
-    def _columns_treatment(self,dataframe):
-        dataframe = self._multiple_replaces(dataframe,'GRAU',self.kinds_map)
-        dataframe = self._multiple_replaces(dataframe,'MODALIDADE',self.shift_map)
-        dataframe = self._multiple_replaces(dataframe,'CERTIFICADORA',self.name_ies_map)
-        dataframe = dfu.replace_series(dataframe,'DURACAO',' semestres','')
+    def _columns_treatment(self, dataframe):
+        dataframe = self._multiple_replaces(dataframe, 'GRAU', self.kinds_map)
+        dataframe = self._multiple_replaces(dataframe, 'METODOLOGIA', self.shift_map)
+        dataframe = dfu.replace_series(dataframe, 'DURAÇÃO', ' semestres', '')
         return dataframe
 
     def load(self):

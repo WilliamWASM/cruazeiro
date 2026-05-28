@@ -16,6 +16,8 @@ class InitialTreatments:
             'POSITIVO - GRAD. EAD' : 'Universidade Positivo'
         }
         self.campus_offers_undefined = pd.DataFrame()
+        self.not_totally_group = pd.DataFrame()
+        self.not_totally_virtual = pd.DataFrame()
 
     def _load_dataframes(self):
         self.offers = sma(self.offers).load()
@@ -23,58 +25,56 @@ class InitialTreatments:
         self.campus = sma(self.campus).load()
 
     def _unpivot_campus_relation(self):
-        curso_cols = [col for col in self.offers_to_campus.columns if str(col).strip().upper().startswith('CURSO_')]
-        id_cols = [col for col in self.offers_to_campus.columns if not str(col).strip().upper().startswith('CURSO_')]
+        # Detecta dinamicamente as colunas CURSO_* da matriz pivotada
+        curso_cols = [col for col in self.offers_to_campus.columns if col.startswith('CURSO_')]
+        id_vars = ['ID_POLO', 'NOME_POL', 'NOM_FILI', 'COD_INST']
         self.offers_to_campus = self.offers_to_campus.melt(
-            id_vars=id_cols,
+            id_vars=id_vars,
             value_vars=curso_cols,
             var_name='CURSO_COL',
-            value_name='OFERECE'
+            value_name='PRESENTE'
         )
-        self.offers_to_campus = self.offers_to_campus[
-            self.offers_to_campus['OFERECE'].astype(str).str.strip().str.upper() == 'X'
-        ]
-        self.offers_to_campus['COD_CURSO'] = self.offers_to_campus['CURSO_COL'].astype(str).str.strip().str.upper().str.replace('CURSO_', '', regex=False)
-        self.offers_to_campus = self.offers_to_campus.drop(columns=['CURSO_COL', 'OFERECE'])
-        self.offers_to_campus['COD_CURSO'] = self.offers_to_campus['COD_CURSO'].astype(str)
-        self.offers_to_campus = self.offers_to_campus.reset_index(drop=True)
+        # Mantém apenas linhas onde o polo tem o curso (marcado com X)
+        self.offers_to_campus = self.offers_to_campus[self.offers_to_campus['PRESENTE'] == 'X'].copy()
+        # Extrai o código numérico de CURSO_<COD> → COD_CURS como string
+        self.offers_to_campus['COD_CURS'] = self.offers_to_campus['CURSO_COL'].str.replace('CURSO_', '', regex=False)
+        self.offers_to_campus = self.offers_to_campus.drop(columns=['CURSO_COL', 'PRESENTE']).reset_index(drop=True)
 
     def _separate_group(self):
-        self.campus_virtual = dfu.filter_content_by_column(self.campus,"3719","university_id")
+        self.campus_virtual = dfu.filter_content_by_column(self.campus, "3719", "university_id")
         self.campus_group = self.campus.copy()
-        self.campus_group = dfu.remove_values_from_column(self.campus_group,"university_id",self.campus_virtual['university_id'])
+        self.campus_group = dfu.remove_values_from_column(self.campus_group, "university_id", self.campus_virtual['university_id'])
 
-    def _adjust_in_campus_offers(self):
-        self.offers_to_campus = self._multiple_replaces(self.offers_to_campus,'NOM_FILI',self.name_ies_map)
+    def _normalize_ies_names(self):
+        # Normaliza NOM_FILI para bater com university_name no exp-campus
+        self.offers_to_campus = self._multiple_replaces(self.offers_to_campus, 'NOM_FILI', self.name_ies_map)
 
-    def _verify_campus_existence(self):
-        self.offers_to_campus = dfu.xlookup(self.offers_to_campus,self.campus_group,'ID_POLO','metadata_code','id','lookup_group')
-        self.offers_to_campus = dfu.xlookup(self.offers_to_campus,self.campus_group,'ID_POLO','metadata_code','name','campus_name_group')
-        self.offers_to_campus = dfu.xlookup(self.offers_to_campus,self.campus_virtual,'ID_POLO','metadata_code','id','lookup_3719')
-        self.offers_to_campus = dfu.xlookup(self.offers_to_campus,self.campus_virtual,'ID_POLO','metadata_code','name','campus_name_3719')
-        has_group = self.offers_to_campus['lookup_group'].notna()
-        has_3719 = self.offers_to_campus['lookup_3719'].notna()
-        has_any = has_group | has_3719
-        has_both = has_group & has_3719
-        undefined = self.offers_to_campus[~has_both].copy().reset_index(drop=True)
-        undefined_has_group = undefined['lookup_group'].notna()
-        undefined_has_3719 = undefined['lookup_3719'].notna()
-        undefined['Faltando Em'] = ''
-        undefined.loc[~undefined_has_group & undefined_has_3719, 'Faltando Em'] = 'Grupo'
-        undefined.loc[undefined_has_group & ~undefined_has_3719, 'Faltando Em'] = '3719'
-        undefined.loc[~undefined_has_group & ~undefined_has_3719, 'Faltando Em'] = 'Grupo e 3719'
-        self.campus_offers_undefined = undefined
-        self.offers_to_campus = self.offers_to_campus[has_any].reset_index(drop=True)
+    def _verify_offers_to_campus_not_match(self):
+        # Verifica em campus_group E campus_virtual separadamente
+        self.offers_to_campus = dfu.xlookup(self.offers_to_campus, self.campus_group, 'ID_POLO', 'metadata_code', 'id', 'lookup_group')
+        self.offers_to_campus = dfu.xlookup(self.offers_to_campus, self.campus_virtual, 'ID_POLO', 'metadata_code', 'id', 'lookup_3719')
+        # Mantém polo se encontrado em pelo menos um dos dois
+        found_mask = self.offers_to_campus['lookup_group'].notna() | self.offers_to_campus['lookup_3719'].notna()
+        self.campus_offers_undefined = self.offers_to_campus[~found_mask].copy()
+        self.offers_to_campus = self.offers_to_campus[found_mask].reset_index(drop=True)
+
+    def _verify_campus_totally_existence(self):
+        # Polos apenas no virtual (sem campus no grupo) — sem ofertas de grupo
+        self.not_totally_group = self.offers_to_campus[self.offers_to_campus['lookup_group'].isna()].copy()
+        # Polos apenas no grupo (sem campus no 3719) — precisam ser criados no 3719
+        self.not_totally_virtual = self.offers_to_campus[self.offers_to_campus['lookup_3719'].isna()].copy()
 
     def load(self):
         self._load_dataframes()
         self._unpivot_campus_relation()
         self._separate_group()
-        self._adjust_in_campus_offers()
-        self._verify_campus_existence()
-        return [self.offers,self.offers_to_campus,self.campus_group,self.campus_virtual,self.campus_offers_undefined]
+        self._normalize_ies_names()
+        self._verify_offers_to_campus_not_match()
+        self._verify_campus_totally_existence()
+        return [self.offers, self.offers_to_campus, self.campus_group, self.campus_virtual,
+                self.campus_offers_undefined, self.not_totally_group, self.not_totally_virtual]
 
-    def _multiple_replaces(self,dataframe,header,values_dict: dict):
+    def _multiple_replaces(self, dataframe, header, values_dict: dict):
         for original_value, new_value in values_dict.items():
-            dataframe = dfu.replace_series(dataframe,header,original_value,new_value)
+            dataframe = dfu.replace_series(dataframe, header, original_value, new_value)
         return dataframe
