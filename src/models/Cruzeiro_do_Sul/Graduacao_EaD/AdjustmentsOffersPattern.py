@@ -1,7 +1,8 @@
-from ...excel_file.SheetManipulation import SheetManipulation as sma
 from ...excel_file.DataFrameUtils import DataFrameUtils as dfu
 from datetime import date
 import numpy as np
+
+
 class AdjustmentsOffersPattern:
     def __init__(self,offers,offers_to_campus,enrollment_semester,end_date,special_condition):
 
@@ -13,6 +14,7 @@ class AdjustmentsOffersPattern:
         }
         self.shift_map = {
             '100% EAD':	'EaD',
+            'DIGITAL': 'EaD',
             'SEMIPRESENCIAL': 'Semipresencial',
             'AO VIVO': 'Ao vivo'
         }
@@ -39,21 +41,39 @@ class AdjustmentsOffersPattern:
         self.offers_to_campus = dfu.drop_rows_have_nulls(self.offers_to_campus, 'GRAU')
 
     def _multiple_replaces(self, dataframe, header, values_dict: dict):
-        for original_value, new_value in values_dict.items():
-            dataframe = dfu.replace_series(dataframe, header, original_value, new_value)
+        normalized_map = {
+            str(original_value).strip().upper(): new_value
+            for original_value, new_value in values_dict.items()
+        }
+        dataframe[header] = dataframe[header].map(
+            lambda value: normalized_map.get(str(value).strip().upper(), value)
+        )
         return dataframe
 
     def _multiples_xlookup(self, dataframe_base, dataframe_search):
-        # Cruzamento por COD_CURS (polo) ↔ Cód. Curso (oferta) — novo formato UPLOAD_GRAD_EAD
-        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'GRAU', 'GRAU')
-        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Modalidade', 'METODOLOGIA')
-        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Duração', 'DURAÇÃO')
-        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Preço SIAA', 'PREÇO PARCELAS')
-        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Porcentagem com Desconto 1° ano', 'PORCENTAGEM DE DESCONTO')
-        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Desconto Garantido Demais Semestres', 'DESCONTO GARANTIDO')
-        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Cód. IES', 'CÓDIGO DA IES')
-        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Curso', 'CURSO')
-        dataframe = dfu.xlookup(dataframe_base, dataframe_search, 'COD_CURS', 'Cód. Curso', 'Código SIAA', 'CÓDIGO SIAA')
+        dataframe = dataframe_base.copy()
+        dataframe = dfu.normalize_lookup_columns(dataframe, ['COD_CURS'])
+        dataframe_search = dfu.normalize_lookup_columns(dataframe_search.copy(), ['Cód. Curso'])
+
+        lookup_columns = {
+            'GRAU': 'GRAU',
+            'Modalidade': 'METODOLOGIA',
+            'Duração': 'DURAÇÃO',
+            'Preço SIAA': 'PREÇO PARCELAS',
+            'Porcentagem com Desconto 1° ano': 'PORCENTAGEM DE DESCONTO',
+            'Desconto Garantido Demais Semestres': 'DESCONTO GARANTIDO',
+            'Cód. IES': 'CÓDIGO DA IES',
+            'Curso': 'CURSO',
+            'Código SIAA': 'CÓDIGO SIAA',
+            'Certificadora': 'CERTIFICADORA'
+        }
+
+        for source_column, target_column in lookup_columns.items():
+            if source_column in dataframe_search.columns:
+                dataframe = dfu.xlookup(
+                    dataframe, dataframe_search, 'COD_CURS', 'Cód. Curso',
+                    source_column, target_column
+                )
         return dataframe
 
     def get_date_actually(self):

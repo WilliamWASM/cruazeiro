@@ -14,7 +14,7 @@ class SheetManipulation:
         "lote_kroton" : ["CHAVE", "LOTE", "IES", "COD_OFERTA_POLO", "DIA DA SEMANA"],
         "estacio_campus": ["external_id","name","address","address_number","address_adjunct"],
         "cruzeiro_offers_to_campus": ['ID_POLO','NOME_POL','NOM_FILI','COD_INST'],
-        "cruzeiro_offers": ["Cód. IES","Cód. Curso","Curso","GRAU","Preço SIAA"]
+        "cruzeiro_offers": ["Cód. Campus","Cód. Curso","Código SIAA","Certificadora","Curso","Modalidade","Duração","Preço SIAA"]
     }
 
     required_headers = {
@@ -67,11 +67,32 @@ class SheetManipulation:
         
     def _set_sheet_type(self):
         headers_found = self.get_headers()
+        if self._is_cruzeiro_offers(headers_found):
+            self.sheet_type = "cruzeiro_offers"
+            return
         for sheet_type,expected_headers in self.HEADERS.items():
             if all(header in headers_found for header in expected_headers):
                 self.sheet_type = sheet_type
                 return
         self.sheet_type =  "others"
+
+    def _is_cruzeiro_offers(self, headers_found):
+        required_headers = [
+            "Cód. Campus",
+            "Cód. Curso",
+            "Código SIAA",
+            "Certificadora",
+            "Curso",
+            "Modalidade",
+            "Duração",
+            "Preço SIAA",
+            "Porcentagem com Desconto 1° ano",
+            "Desconto Garantido Demais Semestres",
+            "Valor com Desconto",
+        ]
+        has_required_headers = all(header in headers_found for header in required_headers)
+        has_level_header = "GRAU" in headers_found or "Grau" in headers_found
+        return has_required_headers and has_level_header
 
     def get_sheet_type(self):
         if self.sheet_type is None:
@@ -226,7 +247,10 @@ class SheetManipulation:
 
     def set_cruzeiro_offers_dtype(self):
         self.dtype = {
+            'Cód. IES' : str,
+            'Cód. Campus' : str,
             'Cód. Curso' : str,
+            'Código SIAA' : str,
         }
 
     def xlsx_is_ready(self):
@@ -343,12 +367,13 @@ class SheetManipulation:
             "Porcentagem com Desconto 1° ano",
             "Desconto Garantido Demais Semestres"
         ]
-        lambda_apply = lambda x: f"{x:.2f}"
-        dataframe.update({
-            col: dataframe[col].apply(lambda_apply)
-            for col in values_columns
-            if col in dataframe.columns
-        })
+        for col in values_columns:
+            if col in dataframe.columns:
+                values = pd.to_numeric(
+                    dataframe[col].astype(str).str.replace(',', '.', regex=False),
+                    errors='coerce'
+                )
+                dataframe[col] = values.map(lambda x: "" if pd.isna(x) else f"{x:.2f}")
         return dataframe
     
     def load_not_header(self):
@@ -356,4 +381,4 @@ class SheetManipulation:
             try:
                 return pd.read_excel(self.path,sheet_name=0,header=None)
             except Exception as e:
-                raise ValueError (f"Erro ao carregar planilha Excel: {e}") 
+                raise ValueError (f"Erro ao carregar planilha Excel: {e}")

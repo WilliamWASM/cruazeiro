@@ -35,6 +35,23 @@ class DataFrameUtils:
     def replace_series(dataframe,header_name,original_value,new_value):
         dataframe[header_name] = dataframe[header_name].astype(str).str.replace(original_value,new_value) 
         return dataframe
+
+    @staticmethod
+    def normalize_lookup_key(series):
+        normalized = (
+            series.astype("string")
+            .str.strip()
+            .str.replace(r"\.0$", "", regex=True)
+        )
+        invalid_values = normalized.str.lower().isin(["", "nan", "none", "null", "<na>"])
+        return normalized.mask(invalid_values)
+
+    @staticmethod
+    def normalize_lookup_columns(dataframe, columns):
+        for column in columns:
+            if column in dataframe.columns:
+                dataframe[column] = DataFrameUtils.normalize_lookup_key(dataframe[column])
+        return dataframe
             
     @staticmethod
     def concat_dataframes(dataframe_top,dataframe_down):
@@ -127,4 +144,3 @@ class DataFrameUtils:
                 if app_version not in df.columns:
                     df.insert(0,"SOE - v1.2.0","")
                 df.to_excel(writer,sheet_name =sheet, index= False)
-        

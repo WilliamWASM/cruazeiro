@@ -23,8 +23,10 @@ class ModifyHandler:
         self.campus_offers_undefined = self.list_treated[4]
         self.not_totally_group = self.list_treated[5]
         self.not_totally_virtual = self.list_treated[6]
+        self.offer_conflicts = self.list_treated[7]
+        self.offers_negative_discount = pd.DataFrame()
 
-    def set_values(self,end_date,special_condition,enrollment_semester):
+    def set_values(self,enrollment_semester,end_date,special_condition):
         adj_offers = AdjustmentsOffersPattern(self.offers,self.offers_to_campus,enrollment_semester,end_date,special_condition)
         self.offers_to_campus = adj_offers.load()
         if not self._verify_if_empty(self.not_totally_group):
@@ -36,7 +38,7 @@ class ModifyHandler:
 
     def _generate_msp(self):
         offers_msp = mgen(self.offers_to_campus, self.campus_group, self.campus_virtual)
-        self.offers_group, self.offers_virtual = offers_msp.load()
+        self.offers_group, self.offers_virtual, self.offers_negative_discount = offers_msp.load()
 
     def load(self,fullpath):
         self._generate_msp()
@@ -53,6 +55,12 @@ class ModifyHandler:
         if not self._verify_if_empty(self.not_totally_virtual):
             sheets.append(self.not_totally_virtual)
             names.append('criar_no_3719')
+        if not self._verify_if_empty(self.offer_conflicts):
+            sheets.append(self.offer_conflicts)
+            names.append('ofertas_codigo_conflitos')
+        if not self._verify_if_empty(self.offers_negative_discount):
+            sheets.append(self.offers_negative_discount)
+            names.append('desconto_comercial_negativo')
         dfu.save_multiple_dataframes(sheets, fullpath, names)
 
     def _verify_if_empty(self,dataframe):
