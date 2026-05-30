@@ -7,7 +7,7 @@ class MspGenerate:
 
     FINAL_COLUMNS = [
         'commercial_discount', 'university_regressive_discount', 'discount_percentage',
-        'real_discount', 'regressive_discount', 'regressive_commercial_discount',
+        'real_discount', 'desconto_balcao_final', 'regressive_discount', 'regressive_commercial_discount',
         'first_regressive_discount', 'second_regressive_discount', 'last_regressive_discount',
         'offered_price', 'name_from_university', 'university_name', 'university_id',
         'campus_name', 'campus_id', 'name', 'level', 'kind', 'shift', 'period_kind',
@@ -71,32 +71,35 @@ class MspGenerate:
         self.campus_offers['name_from_university'] = self.campus_offers['name']
         period = self._get_enrollment_period()
 
+        first_disc = self._to_number(self.campus_offers['PORCENTAGEM DE DESCONTO'])
+        guaranteed_disc = self._to_number(self.campus_offers['DESCONTO GARANTIDO'])
+
         if period == 1:
-            self.campus_offers['_second_disc'] = self.campus_offers['PORCENTAGEM DE DESCONTO']
-            self.campus_offers['_last_disc'] = self.campus_offers['DESCONTO GARANTIDO']
+            second_disc = first_disc
+            last_disc = guaranteed_disc
         else:
-            self.campus_offers['_second_disc'] = self.campus_offers['DESCONTO GARANTIDO']
-            self.campus_offers['_last_disc'] = self.campus_offers['DESCONTO GARANTIDO']
+            second_disc = guaranteed_disc
+            last_disc = guaranteed_disc
 
-        self.campus_offers['commercial_discount'] = self._to_ies_discount(
-            self.campus_offers['PORCENTAGEM DE DESCONTO'])
-        self.campus_offers['regressive_commercial_discount'] = self._to_ies_discount(
-            self.campus_offers['_second_disc'])
-        self.campus_offers['university_regressive_discount'] = self._to_ies_discount(
-            self.campus_offers['_last_disc'])
+        def _pct(series):
+            return (series * 100).round().astype(int)
 
-        self.campus_offers['discount_percentage'] = self.campus_offers['PORCENTAGEM DE DESCONTO']
-        self.campus_offers['regressive_discount'] = self.campus_offers['_second_disc']
+        self.campus_offers['discount_percentage']          = _pct(first_disc)
+        self.campus_offers['commercial_discount']          = _pct(first_disc - 0.05)
+        self.campus_offers['real_discount']                = _pct(last_disc)
+        self.campus_offers['desconto_balcao_final']        = _pct(last_disc - 0.05)
+        self.campus_offers['regressive_commercial_discount'] = _pct(first_disc - last_disc)
+        self.campus_offers['regressive_discount']          = _pct(second_disc)
+        self.campus_offers['university_regressive_discount'] = _pct(last_disc - 0.05)
+
+        self.campus_offers['PORCENTAGEM DE DESCONTO'] = _pct(first_disc)
+        self.campus_offers['_second_disc']            = _pct(second_disc)
+        self.campus_offers['_last_disc']              = _pct(last_disc)
 
     def _compute_derived_values(self):
         if self.campus_offers.empty:
             return
 
-        full_price = self._to_number(self.campus_offers['full_price'])
-        discount = self._to_number(self.campus_offers['PORCENTAGEM DE DESCONTO'])
-
-        self.campus_offers['offered_price'] = (full_price * (1 - discount)).round(2)
-        self.campus_offers['real_discount'] = (full_price * discount).round(2)
         self.campus_offers['COD SIAA'] = self.campus_offers.get('CÓDIGO SIAA')
         self.campus_offers['metadata'] = (
             'code:' + self._text_column(self.campus_offers, 'COD_CURS') +
@@ -194,8 +197,7 @@ class MspGenerate:
     def _separate_negative_discounts(self):
         if self.campus_offers.empty:
             return
-        numeric_discount = pd.to_numeric(self.campus_offers['university_regressive_discount'], errors='coerce')
-        negative_mask = numeric_discount < 0
+        negative_mask = self.campus_offers['desconto_balcao_final'] < 0
         self.offers_negative_discount = self.campus_offers[negative_mask].copy()
         self.campus_offers = self.campus_offers[~negative_mask].reset_index(drop=True)
 

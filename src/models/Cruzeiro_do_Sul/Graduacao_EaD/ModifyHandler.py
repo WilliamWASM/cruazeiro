@@ -60,7 +60,7 @@ class ModifyHandler:
             names.append('ofertas_codigo_conflitos')
         if not self._verify_if_empty(self.offers_negative_discount):
             sheets.append(self.offers_negative_discount)
-            names.append('desconto_comercial_negativo')
+            names.append('Ofertas com Desconto Negativo')
         dfu.save_multiple_dataframes(sheets, fullpath, names)
 
     def _verify_if_empty(self,dataframe):

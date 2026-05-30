@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem \"c:\\\\Users\\\\William Magalhães\\\\Documents\\\\tasks\\\\siteops-echo\\\\src\\\\models\\\\Cruzeiro_do_Sul\\\\Graduacao_EaD\\\\\" | Select-Object Name, PSIsContainer)"
+    ]
+  }
+}
