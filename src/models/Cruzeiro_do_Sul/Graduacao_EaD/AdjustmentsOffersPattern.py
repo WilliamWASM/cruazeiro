@@ -10,7 +10,9 @@ class AdjustmentsOffersPattern:
             'BACHARELADO': 'Bacharelado (graduação)',
             'TECNÓLOGO': 'Tecnólogo (graduação)',
             'LICENCIATURA': 'Licenciatura (graduação)',
-            'BACH / LICENC': 'Bacharelado + Licenciatura (graduação)'
+            'BACH / LICENC': 'Bacharelado + Licenciatura (graduação)',
+            'GRADUAÇÃO 2.0': 'Segunda graduação',
+            'ABI': 'Bacharelado + Licenciatura (graduação)'
         }
         self.shift_map = {
             '100% EAD':	'EaD',
@@ -52,8 +54,8 @@ class AdjustmentsOffersPattern:
 
     def _multiples_xlookup(self, dataframe_base, dataframe_search):
         dataframe = dataframe_base.copy()
-        dataframe = dfu.normalize_lookup_columns(dataframe, ['COD_CURS'])
-        dataframe_search = dfu.normalize_lookup_columns(dataframe_search.copy(), ['Cód. Curso'])
+        dataframe = dfu.normalize_lookup_columns(dataframe, ['COD_CURS', 'MATCH_KEY'])
+        dataframe_search = dfu.normalize_lookup_columns(dataframe_search.copy(), ['Cód. Curso', 'MATCH_KEY'])
 
         lookup_columns = {
             'GRAU': 'GRAU',
@@ -71,7 +73,7 @@ class AdjustmentsOffersPattern:
         for source_column, target_column in lookup_columns.items():
             if source_column in dataframe_search.columns:
                 dataframe = dfu.xlookup(
-                    dataframe, dataframe_search, 'COD_CURS', 'Cód. Curso',
+                    dataframe, dataframe_search, 'MATCH_KEY', 'MATCH_KEY',
                     source_column, target_column
                 )
         return dataframe

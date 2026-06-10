@@ -21,6 +21,8 @@ class InitialTreatments:
         self.not_totally_group = pd.DataFrame()
         self.not_totally_virtual = pd.DataFrame()
         self.offer_conflicts = pd.DataFrame()
+        self.relation_without_offer = pd.DataFrame()
+        self.offers_without_relation = pd.DataFrame()
 
     def _load_dataframes(self):
         self.offers = sma(self.offers).load()
@@ -40,36 +42,35 @@ class InitialTreatments:
         self.campus = dfu.normalize_lookup_columns(self.campus, ['id', 'metadata_code', 'university_id'])
         self.offers_to_campus = dfu.normalize_lookup_columns(self.offers_to_campus, ['ID_POLO', 'COD_INST'])
 
-    def _consolidate_offers_by_course(self):
-        if 'Cód. Curso' not in self.offers.columns:
+    def _build_offers_match_key(self):
+        if 'Cód. Campus' not in self.offers.columns or 'Cód. Curso' not in self.offers.columns:
+            return
+        campus = dfu.normalize_lookup_key(self.offers['Cód. Campus'])
+        course = dfu.normalize_lookup_key(self.offers['Cód. Curso'])
+        self.offers['MATCH_KEY'] = campus.str.cat(course, sep='|')
+
+    def _detect_offer_conflicts(self):
+        if 'MATCH_KEY' not in self.offers.columns:
+            return
+        valid = self.offers['MATCH_KEY'].notna()
+        duplicated = valid & self.offers.duplicated(subset='MATCH_KEY', keep=False)
+        if duplicated.any():
+            self.offer_conflicts = self.offers[duplicated].copy()
+
+    def _build_validation_frames(self):
+        if 'MATCH_KEY' not in self.offers.columns or 'MATCH_KEY' not in self.offers_to_campus.columns:
             return
 
-        watched_columns = [
-            'Cód. IES', 'Cód. Campus', 'Código SIAA', 'Certificadora', 'Curso',
-            'GRAU', 'Modalidade', 'Duração', 'Preço SIAA',
-            'Porcentagem com Desconto 1° ano',
-            'Desconto Garantido Demais Semestres'
-        ]
-        watched_columns = [col for col in watched_columns if col in self.offers.columns]
-        conflict_frames = []
+        offer_keys = self.offers['MATCH_KEY'].dropna().unique()
+        relation_keys = self.offers_to_campus['MATCH_KEY']
+        self.relation_without_offer = self.offers_to_campus[
+            relation_keys.notna() & ~relation_keys.isin(offer_keys)
+        ].copy()
 
-        for course_code, group in self.offers.groupby('Cód. Curso', dropna=False, sort=False):
-            if pd.isna(course_code) or len(group) <= 1:
-                continue
-
-            conflict_columns = [
-                col for col in watched_columns
-                if dfu.normalize_lookup_key(group[col].fillna('')).nunique(dropna=False) > 1
-            ]
-            if conflict_columns:
-                conflict = group.copy()
-                conflict['conflict_columns'] = ' | '.join(conflict_columns)
-                conflict_frames.append(conflict)
-
-        if conflict_frames:
-            self.offer_conflicts = pd.concat(conflict_frames, ignore_index=True)
-
-        self.offers = self.offers.drop_duplicates(subset='Cód. Curso', keep='first').reset_index(drop=True)
+        relation_key_values = self.offers_to_campus['MATCH_KEY'].dropna().unique()
+        self.offers_without_relation = self.offers[
+            self.offers['MATCH_KEY'].notna() & ~self.offers['MATCH_KEY'].isin(relation_key_values)
+        ].copy()
 
     def _unpivot_campus_relation(self):
         curso_cols = [col for col in self.offers_to_campus.columns if col.startswith('CURSO_')]
@@ -89,6 +90,9 @@ class InitialTreatments:
         self.offers_to_campus = self.offers_to_campus[presente == 'X'].copy()
         self.offers_to_campus['COD_CURS'] = self.offers_to_campus['CURSO_COL'].str.replace('CURSO_', '', regex=False)
         self.offers_to_campus = dfu.normalize_lookup_columns(self.offers_to_campus, ['ID_POLO', 'COD_CURS', 'COD_INST'])
+        self.offers_to_campus['MATCH_KEY'] = (
+            self.offers_to_campus['COD_INST'].str.cat(self.offers_to_campus['COD_CURS'], sep='|')
+        )
         self.offers_to_campus = (
             self.offers_to_campus
             .drop(columns=['CURSO_COL', 'PRESENTE'])
@@ -120,15 +124,17 @@ class InitialTreatments:
         self._load_dataframes()
         self._normalize_offer_headers()
         self._normalize_loaded_keys()
-        self._consolidate_offers_by_course()
+        self._build_offers_match_key()
+        self._detect_offer_conflicts()
         self._unpivot_campus_relation()
+        self._build_validation_frames()
         self._separate_group()
         self._normalize_ies_names()
         self._verify_offers_to_campus_not_match()
         self._verify_campus_totally_existence()
         return [self.offers, self.offers_to_campus, self.campus_group, self.campus_virtual,
                 self.campus_offers_undefined, self.not_totally_group, self.not_totally_virtual,
-                self.offer_conflicts]
+                self.offer_conflicts, self.relation_without_offer, self.offers_without_relation]
 
     def _multiple_replaces(self, dataframe, header, values_dict: dict):
         for original_value, new_value in values_dict.items():
