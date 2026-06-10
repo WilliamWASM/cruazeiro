@@ -69,6 +69,7 @@ class MspGenerate:
         }, inplace=True)
 
         self.campus_offers['name_from_university'] = self.campus_offers['name']
+        self.campus_offers['max_periods'] = self._text_column(self.campus_offers, 'max_periods')
         period = self._get_enrollment_period()
 
         first_disc = self._to_number(self.campus_offers['PORCENTAGEM DE DESCONTO'])
@@ -84,13 +85,20 @@ class MspGenerate:
         def _pct(series):
             return (series * 100).round().astype(int)
 
+        def _triple(first, second, last):
+            return (
+                _pct(first).astype(str) + ' '
+                + _pct(second).astype(str) + ' '
+                + _pct(last).astype(str)
+            )
+
         self.campus_offers['discount_percentage']          = _pct(first_disc)
         self.campus_offers['commercial_discount']          = _pct(first_disc - 0.05)
         self.campus_offers['real_discount']                = _pct(last_disc)
         self.campus_offers['desconto_balcao_final']        = _pct(last_disc - 0.05)
         self.campus_offers['regressive_commercial_discount'] = _pct(first_disc - last_disc)
-        self.campus_offers['regressive_discount']          = _pct(second_disc)
-        self.campus_offers['university_regressive_discount'] = _pct(last_disc - 0.05)
+        self.campus_offers['regressive_discount']          = _triple(first_disc, second_disc, last_disc)
+        self.campus_offers['university_regressive_discount'] = _triple(first_disc - 0.05, second_disc - 0.05, last_disc - 0.05)
 
         self.campus_offers['PORCENTAGEM DE DESCONTO'] = _pct(first_disc)
         self.campus_offers['_second_disc']            = _pct(second_disc)
@@ -110,7 +118,6 @@ class MspGenerate:
         self.campus_offers['total_seats'] = None
         self.campus_offers['max_payments'] = None
         self.campus_offers['course_metadata'] = None
-        self.campus_offers['offer_extra_benefit'] = None
 
     def _lookup_campus_fields(self, dataframe, campus_dataframe):
         if dataframe.empty:
@@ -184,6 +191,7 @@ class MspGenerate:
             'Data de Início da Oferta': 'start',
             'Data de Fim da Oferta': 'end',
             'Benefício 1 (Chave OSC)': 'offer_special_conditions',
+            'Benefício 2 (Chave OSC)': 'offer_extra_benefit',
             'Semestre de Ingresso': 'enrollment_semester',
             'Avisos': 'offer_extra_warning',
         }
