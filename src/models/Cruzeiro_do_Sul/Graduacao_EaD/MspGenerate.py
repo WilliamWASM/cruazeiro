@@ -38,9 +38,6 @@ class MspGenerate:
             errors='coerce'
         ).fillna(0)
 
-    def _to_ies_discount(self, series):
-        return (self._to_number(series) - 0.05).map(lambda value: f"{value:.2f}")
-
     def _set_campus_ids(self):
         if self.campus_offers.empty:
             return
@@ -48,13 +45,18 @@ class MspGenerate:
         self.campus_offers = dfu.normalize_lookup_columns(self.campus_offers, ['campus_id', 'lookup_group', 'lookup_3719'])
 
     def _get_enrollment_period(self):
-        if self.campus_offers.empty or 'Semestre de Ingresso' not in self.campus_offers.columns:
-            return 2
-        try:
-            semester = str(self.campus_offers.iloc[0]['Semestre de Ingresso'])
-            return int(semester.split('.')[1]) if '.' in semester else 2
-        except Exception:
-            return 2
+        if 'Semestre de Ingresso' not in self.campus_offers.columns:
+            raise ValueError(
+                "Coluna 'Semestre de Ingresso' ausente ao calcular descontos regressivos."
+            )
+        semester = str(self.campus_offers.iloc[0]['Semestre de Ingresso']).strip()
+        parts = semester.split('.')
+        if len(parts) != 2 or parts[1] not in ('1', '2'):
+            raise ValueError(
+                f"Semestre de Ingresso inválido: '{semester}'. "
+                "Esperado o formato 'AAAA.1' ou 'AAAA.2'."
+            )
+        return int(parts[1])
 
     def _process_discounts(self):
         if self.campus_offers.empty:

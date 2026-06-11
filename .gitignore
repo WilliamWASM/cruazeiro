@@ -215,3 +215,6 @@ __marimo__/
 
 # Documentos de planejamento local
 *.md
+
+# Configurações locais do Claude Code (estado por máquina)
+.claude/settings.local.json

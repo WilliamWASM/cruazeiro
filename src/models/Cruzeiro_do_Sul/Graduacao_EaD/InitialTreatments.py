@@ -82,7 +82,7 @@ class InitialTreatments:
         self.campus_group = self.campus[self.campus['university_id'] != "3719"].copy()
 
     def _normalize_ies_names(self):
-        self.offers_to_campus = self._multiple_replaces(self.offers_to_campus, 'NOM_FILI', self.name_ies_map)
+        self.offers_to_campus = dfu.map_replace(self.offers_to_campus, 'NOM_FILI', self.name_ies_map)
         self.offers_to_campus['certification_name'] = self.offers_to_campus['NOM_FILI']
 
     def _verify_offers_to_campus_not_match(self):
@@ -112,8 +112,3 @@ class InitialTreatments:
         return [self.offers, self.offers_to_campus, self.campus_group, self.campus_virtual,
                 self.campus_offers_undefined, self.not_totally_group, self.not_totally_virtual,
                 self.offer_conflicts, self.offers_without_relation]
-
-    def _multiple_replaces(self, dataframe, header, values_dict: dict):
-        for original_value, new_value in values_dict.items():
-            dataframe = dfu.replace_series(dataframe, header, original_value, new_value)
-        return dataframe

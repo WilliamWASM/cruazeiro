@@ -52,16 +52,6 @@ class AdjustmentsOffersPattern:
         self.offers_to_campus['GRAU'] = (self.offers_to_campus['GRAU'].replace(['nan', 'NaN', 'None', 'NULL', 'null', ''], np.nan))
         self.offers_to_campus = dfu.drop_rows_have_nulls(self.offers_to_campus, 'GRAU')
 
-    def _multiple_replaces(self, dataframe, header, values_dict: dict):
-        normalized_map = {
-            str(original_value).strip().upper(): new_value
-            for original_value, new_value in values_dict.items()
-        }
-        dataframe[header] = dataframe[header].map(
-            lambda value: normalized_map.get(str(value).strip().upper(), value)
-        )
-        return dataframe
-
     def _multiples_xlookup(self, dataframe_base, dataframe_search):
         dataframe = dataframe_base.copy()
         dataframe = dfu.normalize_lookup_columns(dataframe, ['COD_CURS', 'MATCH_KEY'])
@@ -93,8 +83,8 @@ class AdjustmentsOffersPattern:
         return today.strftime("%d/%m/%Y")
 
     def _columns_treatment(self, dataframe):
-        dataframe = self._multiple_replaces(dataframe, 'GRAU', self.kinds_map)
-        dataframe = self._multiple_replaces(dataframe, 'METODOLOGIA', self.shift_map)
+        dataframe = dfu.map_replace(dataframe, 'GRAU', self.kinds_map)
+        dataframe = dfu.map_replace(dataframe, 'METODOLOGIA', self.shift_map)
         dataframe = dfu.replace_series(dataframe, 'DURAÇÃO', ' semestres', '')
         return dataframe
 

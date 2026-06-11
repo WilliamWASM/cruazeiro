@@ -24,6 +24,7 @@ class ExtraWarningGenerate:
 
         self.msp_offers = dfu.xlookup(self.msp_offers, self.relation_kind, 'kind', 'kind', 'extra_warning', 'Avisos')
 
-        if 'name' in self.msp_offers.columns:
-            self.msp_offers.loc[self.msp_offers["name"].str.contains("2.0", na=False), "Avisos"] = self.warning_special
+        if 'level' in self.msp_offers.columns:
+            self.msp_offers.loc[
+                self.msp_offers["level"].str.contains("Segunda graduação", case=False, na=False), "Avisos"] = self.warning_special
         return self.msp_offers

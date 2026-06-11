@@ -52,6 +52,23 @@ class DataFrameUtils:
             if column in dataframe.columns:
                 dataframe[column] = DataFrameUtils.normalize_lookup_key(dataframe[column])
         return dataframe
+
+    @staticmethod
+    def map_replace(dataframe, header, values_dict: dict):
+        """Substitui valores de uma coluna por correspondência exata (case/space-insensitive).
+
+        Diferente de ``replace_series`` (que faz replace de substring/regex), aqui o
+        valor só é trocado quando casa por completo com uma chave do mapa, evitando
+        substituições parciais indesejadas em valores com caracteres especiais.
+        """
+        normalized_map = {
+            str(original_value).strip().upper(): new_value
+            for original_value, new_value in values_dict.items()
+        }
+        dataframe[header] = dataframe[header].map(
+            lambda value: normalized_map.get(str(value).strip().upper(), value)
+        )
+        return dataframe
             
     @staticmethod
     def concat_dataframes(dataframe_top,dataframe_down):
