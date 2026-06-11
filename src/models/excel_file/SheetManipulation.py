@@ -243,6 +243,9 @@ class SheetManipulation:
     def set_cruzeiro_offers_to_campus_dtype(self):
         self.dtype = {
             'ID_POLO' : str,
+            'COD_INST' : str,
+            'COD_CURS' : str,
+            'COD SIAA' : str,
         }
 
     def set_cruzeiro_offers_dtype(self):

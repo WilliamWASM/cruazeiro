@@ -13,7 +13,8 @@ class MspGenerate:
         'campus_name', 'campus_id', 'name', 'level', 'kind', 'shift', 'period_kind',
         'max_periods', 'COD SIAA', 'full_price', 'start', 'end', 'limited', 'total_seats',
         'offer_special_conditions', 'offer_extra_warning', 'enrollment_semester',
-        'max_payments', 'metadata', 'course_metadata', 'offer_extra_benefit'
+        'max_payments', 'metadata', 'course_metadata', 'offer_extra_benefit',
+        'ID_POLO', 'POLO_SEDE', 'COD_EMPR', 'COD_INST', 'COD_CURS'
     ]
 
     def __init__(self, campus_offers, campus_group, campus_virtual):
@@ -222,6 +223,7 @@ class MspGenerate:
             'Semestre de Ingresso',
             'max_payments',
             'full_price',
+            'COD SIAA',
         ]
         subset = [col for col in sku_columns if col in dataframe.columns]
         return dataframe.drop_duplicates(subset=subset).reset_index(drop=True)

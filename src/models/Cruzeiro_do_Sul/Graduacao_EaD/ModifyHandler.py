@@ -24,8 +24,7 @@ class ModifyHandler:
         self.not_totally_group = self.list_treated[5]
         self.not_totally_virtual = self.list_treated[6]
         self.offer_conflicts = self.list_treated[7]
-        self.relation_without_offer = self.list_treated[8]
-        self.offers_without_relation = self.list_treated[9]
+        self.offers_without_relation = self.list_treated[8]
         self.offers_negative_discount = pd.DataFrame()
 
     def set_values(self,enrollment_semester,end_date,special_condition):
@@ -60,9 +59,6 @@ class ModifyHandler:
         if not self._verify_if_empty(self.offer_conflicts):
             sheets.append(self.offer_conflicts)
             names.append('ofertas_codigo_conflitos')
-        if not self._verify_if_empty(self.relation_without_offer):
-            sheets.append(self.relation_without_offer)
-            names.append('relacao_sem_oferta')
         if not self._verify_if_empty(self.offers_without_relation):
             sheets.append(self.offers_without_relation)
             names.append('ofertas_sem_relacao')
