@@ -110,11 +110,11 @@ class MspGenerate:
             return
 
         self.campus_offers['COD SIAA'] = self.campus_offers.get('CÓDIGO SIAA')
-        self.campus_offers['metadata'] = (
-            'code:' + self._text_column(self.campus_offers, 'COD_CURS') +
-            ';campus_code:' + self._text_column(self.campus_offers, 'ID_POLO') +
-            ';ies_code:' + self._text_column(self.campus_offers, 'CÓDIGO DA IES')
-        )
+        # self.campus_offers['metadata'] = (
+        #     'code:' + self._text_column(self.campus_offers, 'COD_CURS') +
+        #     ';campus_code:' + self._text_column(self.campus_offers, 'ID_POLO') +
+        #     ';ies_code:' + self._text_column(self.campus_offers, 'CÓDIGO DA IES')
+        # )
 
         self.campus_offers['total_seats'] = None
         self.campus_offers['max_payments'] = None
