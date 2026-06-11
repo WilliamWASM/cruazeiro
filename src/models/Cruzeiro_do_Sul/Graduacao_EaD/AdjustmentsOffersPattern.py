@@ -35,18 +35,8 @@ class AdjustmentsOffersPattern:
         self.offers_to_campus['Qual valor usar?\n% ou R$'] = 'porcentagem'
         self.offers_to_campus['LIMITADA?'] = 'FALSE'
         self.offers_to_campus['Data de Fim da Oferta'] = self.end_date
-        osc_1, osc_2 = self._split_osc(self.special_condition)
-        self.offers_to_campus['Benefício 1 (Chave OSC)'] = osc_1
-        self.offers_to_campus['Benefício 2 (Chave OSC)'] = osc_2
+        self.offers_to_campus['Benefício 1 (Chave OSC)'] = self.special_condition
         self.offers_to_campus.loc[:, 'Data de Início da Oferta'] = self.get_date_actually()
-
-    def _split_osc(self, value):
-        if value is None:
-            return None, None
-        parts = str(value).split('|', 1)
-        first = parts[0].strip()
-        second = parts[1].strip() if len(parts) > 1 else None
-        return first, second
 
     def _remove_nan_offers(self):
         self.offers_to_campus['GRAU'] = (self.offers_to_campus['GRAU'].replace(['nan', 'NaN', 'None', 'NULL', 'null', ''], np.nan))

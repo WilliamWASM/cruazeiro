@@ -194,7 +194,7 @@ class MspGenerate:
             'Data de Início da Oferta': 'start',
             'Data de Fim da Oferta': 'end',
             'Benefício 1 (Chave OSC)': 'offer_special_conditions',
-            'Benefício 2 (Chave OSC)': 'offer_extra_benefit',
+            #'Benefício 2 (Chave OSC)': 'offer_extra_benefit',
             'Semestre de Ingresso': 'enrollment_semester',
             'Avisos': 'offer_extra_warning',
         }
